@@ -1,4 +1,4 @@
-const { TestimonyService } = require('./testimony.service');
+const { TestimonyService } = require('./testimony.services');
 
 class TestimonyController {
   static async get(req, res, next) {

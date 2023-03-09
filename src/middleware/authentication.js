@@ -1,4 +1,7 @@
 exports.Authentication = function (req, res, next) {
-  // Check Authentication
+  // res.status(401).json({
+  //   code: 401,
+  //   message: 'Unauthorized',
+  // });
   next();
 };

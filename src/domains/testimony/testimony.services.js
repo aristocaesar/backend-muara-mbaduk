@@ -3,15 +3,9 @@ const { Testimony } = require('./testimony.model');
 
 class TestimonyService {
   static async getAll() {
-    return new Testimony(
-      1,
-      'Aristo Caesar',
-      'aristo.png',
-      'Qui consequat nulla laboris qui tempor sint occaecat velit amet officia.',
-      'dsad',
-      1,
-      's'
-    ).toJSON();
+    const testimonies = await knex.select().table('testimony');
+    console.log(testimonies);
+    return testimonies.map((testimony) => new Testimony(testimony));
   }
 
   static async getById(id) {}
