@@ -7,6 +7,7 @@ exports.up = async function (knex) {
     table.uuid('id').primary();
     table.string('title').notNullable().unique();
     table.string('summary').notNullable();
+    table.bigint('price').notNullable();
     table.text('description').notNullable();
     table.string('image').notNullable();
     table
@@ -20,8 +21,8 @@ exports.up = async function (knex) {
   });
   await knex.schema.createTable('packages_detail', function (table) {
     table.uuid('id');
-    table.string('title_package').references('id').inTable('packages');
-    table.string('title_product').references('id').inTable('products');
+    table.string('title_package').references('title').inTable('packages');
+    table.string('title_product').references('title').inTable('products');
     table
       .dateTime('created_at')
       .notNullable()
