@@ -41,14 +41,14 @@ class ProductController {
 
   static async store(req, res, next) {
     try {
-      const product = await ProductsService.store(req);
+      console.log(req.files);
+      // const product = await ProductsService.store(req);
       res.status(201).json({
         code: 201,
         status: 'OK',
-        data: product,
+        data: req.body,
       });
     } catch (error) {
-      console.log(error);
       res.status(400).json({
         code: 400,
         status: 'BAD_REQUEST',

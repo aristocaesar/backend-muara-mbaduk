@@ -45,7 +45,6 @@ class ProductsService {
     if (req.file == undefined) throw new Error('Gambar produk harus terisi');
     const { filename } = req.file;
     const image = `${process.env.APP_URI}/static/images/products/${filename}`;
-
     let { id = uuidv4(), title, description, price, fines_broken } = req.body;
     return await knex
       .insert({ id, title, description, image, price, fines_broken })

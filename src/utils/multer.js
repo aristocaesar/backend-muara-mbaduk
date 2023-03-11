@@ -32,13 +32,13 @@ const handleErrors = function (err, res) {
   }
 };
 
-exports.uploadProduct = function (req, res, next) {
+exports.upload = function (req, res, next) {
   const upload = multer({
-    storage: multerStorage('images/products'),
+    storage: multerStorage('uploads/'),
     limits: {
       fieldSize: 2 * 1000 * 1000,
     },
-  }).single('image');
+  }).array('file', 10);
   upload(req, res, (err) => {
     if (err) {
       handleErrors(err, res);

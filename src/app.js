@@ -9,10 +9,11 @@ const { Authentication } = require('./middleware/authentication');
 
 const { testimonyRoutes } = require('./domains/testimony/testimony.routes');
 const { productRoutes } = require('./domains/product/product.routes');
+const { uploadRoutes } = require('./domains/upload/upload.routes');
 
 app.use(compression());
 app.use(cors());
-// allow parse x-www-form-urlencoded
+// allow parse x-www-form-urlencoded / multipart/form-data
 app.use(express.urlencoded({ extended: false }));
 // allow parse application/json
 app.use(express.json());
@@ -32,6 +33,7 @@ app.use('/static', express.static(path.join(__dirname, 'public')));
 app.use(Authentication);
 
 // Routes ( Version 1 )
+app.use('/api/v1/uploads', uploadRoutes);
 app.use('/api/v1/testimonies', testimonyRoutes);
 app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/packages', () => {});
