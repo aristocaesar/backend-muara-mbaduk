@@ -6,7 +6,7 @@ const route = Router();
 route.get('/', ProductController.get);
 route.get('/:id', ProductController.getById);
 route.post('/', ProductController.store);
-route.put('/', ProductController.update);
-route.delete('/', ProductController.delete);
+route.put('/:id', ProductController.update);
+route.delete('/:id', ProductController.delete);
 
 module.exports = { productRoutes: route };

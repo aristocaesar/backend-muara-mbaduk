@@ -1,5 +1,3 @@
-const Joi = require('joi');
-
 class Product {
   constructor({
     id,
@@ -19,32 +17,6 @@ class Product {
     this.finesBroken = fines_broken;
     this.created_at = created_at;
     this.updated_at = updated_at;
-  }
-
-  static validate(req) {
-    const schema = Joi.object({
-      title: Joi.string().required().messages({
-        'string.empty': 'Nama produk harus terisi',
-        'any.required': 'Nama produk harus terisi',
-      }),
-      description: Joi.string().required().messages({
-        'string.empty': 'Deskripsi produk harus terisi',
-        'any.required': 'Deskripsi produk harus terisi',
-      }),
-      price: Joi.string().required().messages({
-        'string.empty': 'Harga produk harus terisi',
-        'any.required': 'Harga produk harus terisi',
-      }),
-      fines_broken: Joi.string().required().messages({
-        'string.empty': 'Harga ganti rugi produk harus terisi',
-        'any.required': 'Harga ganti rugi produk harus terisi',
-      }),
-    });
-
-    const validate = schema.validate(req.body);
-    if (validate.error != undefined) {
-      throw new Error(validate.error.details[0].message);
-    }
   }
 
   toJson() {

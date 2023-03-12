@@ -3,7 +3,6 @@ const { Upload } = require('./upload.model');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs/promises');
 const appRoot = require('app-root-path');
-const Joi = require('joi');
 
 class UploadService {
   /**
@@ -16,6 +15,23 @@ class UploadService {
       .table('uploads')
       .then((rows) => {
         return rows.map((row) => new Upload(row).toJson());
+      });
+  }
+
+  /**
+   * Get file uploaded by id
+   * @returns
+   */
+  static async getById(id) {
+    return await knex('uploads')
+      .where('id', id)
+      .first()
+      .then((row) => {
+        if (row != undefined) return new Upload(row).toJson();
+        return [];
+      })
+      .catch((error) => {
+        throw new Error(error);
       });
   }
 
@@ -49,27 +65,16 @@ class UploadService {
    * @param {Request} req
    * @returns
    */
-  static async delete(req) {
-    const schema = Joi.object({
-      filename: Joi.string().required().messages({
-        'string.empty': 'Filename file harus terisi',
-        'any.required': 'Filename file harus terisi',
-      }),
-    });
-
-    const validate = schema.validate(req.body);
-    if (validate.error != undefined) {
-      throw new Error(validate.error.details[0].message);
-    }
-
+  static async delete(filename) {
     return await knex('uploads')
-      .where({ filename: req.body.filename })
+      .where({ filename })
       .del()
       .then(async () => {
-        const filePath = `${appRoot.path}/src/public/uploads/${req.body.filename}`;
-        return await fs.unlink(filePath).catch(() => {
-          throw new Error('No such file or directory');
+        const filePath = `${appRoot.path}/src/public/uploads/${filename}`;
+        await fs.unlink(filePath).catch(() => {
+          throw 'Tidak ada berkas atau direktori yang ditemukan';
         });
+        return 'Berkas berhasil dihapus';
       })
       .catch((err) => {
         throw new Error(err);

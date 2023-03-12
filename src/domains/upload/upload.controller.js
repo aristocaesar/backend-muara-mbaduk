@@ -1,6 +1,12 @@
 const { UploadService } = require('./upload.services');
 
 class UploadController {
+  /**
+   * Get all file uploaded
+   * @param {Request} req
+   * @param {Response} res
+   * @param {Next} next
+   */
   static async get(req, res, next) {
     try {
       const uploads = await UploadService.get();
@@ -20,13 +26,19 @@ class UploadController {
     }
   }
 
+  /**
+   * Get file uploaded by id
+   * @param {Request} req
+   * @param {Response} res
+   * @param {Next} next
+   */
   static async getById(req, res, next) {
     try {
-      const uploads = await UploadService.get();
+      const upload = await UploadService.getById(req.params.id);
       res.status(200).json({
         code: 200,
         status: 'OK',
-        data: uploads,
+        data: upload,
       });
     } catch (error) {
       res.status(400).json({
@@ -39,6 +51,12 @@ class UploadController {
     }
   }
 
+  /**
+   * Store file
+   * @param {Request} req
+   * @param {Response} res
+   * @param {Next} next
+   */
   static async store(req, res, next) {
     try {
       const uploaded = await UploadService.store(req);
@@ -58,9 +76,15 @@ class UploadController {
     }
   }
 
+  /**
+   * Delete file uploaded
+   * @param {Request} req
+   * @param {Response} res
+   * @param {Next} next
+   */
   static async delete(req, res, next) {
     try {
-      const deleted = await UploadService.delete(req);
+      const deleted = await UploadService.delete(req.params.filename);
       res.status(200).json({
         code: 200,
         status: 'OK',

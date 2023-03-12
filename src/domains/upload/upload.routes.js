@@ -6,6 +6,7 @@ const router = Router();
 
 router.get('/', UploadController.get);
 router.post('/', upload, UploadController.store);
-router.delete('/', UploadController.delete);
+router.get('/:id', UploadController.getById);
+router.delete('/:filename', UploadController.delete);
 
 module.exports = { uploadRoutes: router };

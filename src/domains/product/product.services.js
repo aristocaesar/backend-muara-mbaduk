@@ -1,10 +1,11 @@
 const { knex } = require('../../config/database');
 const { Product } = require('./product.model');
 const { v4: uuidv4 } = require('uuid');
+const { ProductValidate } = require('./product.validate');
 
 class ProductsService {
   /**
-   * Get all products
+   * Service Get all products
    */
   static async get() {
     return await knex
@@ -14,12 +15,12 @@ class ProductsService {
         return rows.map((product) => new Product(product).toJson());
       })
       .catch((error) => {
-        throw error;
+        throw new Error(error);
       });
   }
 
   /**
-   * Get product by id
+   * Service Get product by id
    * @param {string} id
    */
   static async getById(id) {
@@ -31,21 +32,26 @@ class ProductsService {
         return [];
       })
       .catch((error) => {
-        throw error;
+        throw new Error(error);
       });
   }
 
   /**
-   * Store product to database
+   * Service Store product
    * @param {Request} req
    * @returns
    */
-  static async store(req) {
-    Product.validate(req);
-    if (req.file == undefined) throw new Error('Gambar produk harus terisi');
-    const { filename } = req.file;
-    const image = `${process.env.APP_URI}/static/images/products/${filename}`;
-    let { id = uuidv4(), title, description, price, fines_broken } = req.body;
+  static async store(body) {
+    ProductValidate.valid(body);
+
+    let {
+      id = uuidv4(),
+      title,
+      description,
+      image,
+      price,
+      fines_broken,
+    } = body;
     return await knex
       .insert({ id, title, description, image, price, fines_broken })
       .into('products')
@@ -61,9 +67,49 @@ class ProductsService {
       });
   }
 
-  static async update() {}
+  /**
+   * Service Update product
+   * @param {String} id
+   * @param {Object} body
+   * @returns
+   */
+  static async update(id, body) {
+    ProductValidate.valid(body);
 
-  static async delete() {}
+    return await knex('products')
+      .where({ id })
+      .update(body)
+      .then((rowCount) => {
+        if (rowCount === 0) {
+          throw 'Id atau produk tersebut tidak tersedia';
+        }
+        return new Product(body).toJson();
+      })
+      .catch((err) => {
+        if (err.code == 'ER_DUP_ENTRY') {
+          throw new Error('Produk ini sudah tersedia');
+        }
+        throw new Error(err);
+      });
+  }
+
+  /**
+   * Service Delete product
+   * @param {String} id
+   * @returns
+   */
+  static async delete(id) {
+    return await knex('products')
+      .where({ id })
+      .del()
+      .then((deleted) => {
+        if (deleted === 0) throw 'Id atau produk tersebut tidak tersedia';
+        return 'Produk berhasil dihapus';
+      })
+      .catch((err) => {
+        throw new Error(err);
+      });
+  }
 }
 
 module.exports = { ProductsService };
