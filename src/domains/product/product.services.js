@@ -47,17 +47,18 @@ class ProductsService {
     let {
       id = uuidv4(),
       title,
+      slug,
       description,
       image,
       price,
-      fines_broken,
+      compensation,
     } = body;
     return await knex
-      .insert({ id, title, description, image, price, fines_broken })
+      .insert({ id, title, slug, description, image, price, compensation })
       .into('products')
       .then(() => {
-        (price = parseInt(price)), (fines_broken = parseInt(fines_broken));
-        return { id, title, description, image, price, fines_broken };
+        (price = parseInt(price)), (compensation = parseInt(compensation));
+        return { id, title, slug, description, image, price, compensation };
       })
       .catch((error) => {
         if (error.code == 'ER_DUP_ENTRY') {

@@ -6,10 +6,11 @@ exports.up = function (knex) {
   return knex.schema.createTable('products', function (table) {
     table.uuid('id').primary();
     table.string('title').notNullable().unique();
+    table.string('slug').notNullable().unique();
     table.text('description').notNullable();
     table.string('image').notNullable();
     table.bigint('price').notNullable();
-    table.bigint('fines_broken').notNullable();
+    table.bigint('compensation').notNullable();
     table
       .dateTime('created_at')
       .notNullable()

@@ -2,19 +2,21 @@ class Product {
   constructor({
     id,
     title,
+    slug,
     description,
     price,
     image,
-    fines_broken,
+    compensation,
     created_at,
     updated_at,
   }) {
     this.id = id;
     this.title = title;
+    this.slug = slug;
     this.description = description;
     this.image = image;
     this.price = price;
-    this.finesBroken = fines_broken;
+    this.finesBroken = compensation;
     this.created_at = created_at;
     this.updated_at = updated_at;
   }
@@ -23,10 +25,11 @@ class Product {
     return {
       id: this.id,
       title: this.title,
+      slug: this.slug,
       description: this.description,
       image: this.image,
       price: this.price,
-      fines_broken: this.finesBroken,
+      compensation: this.finesBroken,
       created_at: this.created_at,
       updated_at: this.updated_at,
     };
