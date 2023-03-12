@@ -23,9 +23,9 @@ class ProductsService {
    * Service Get product by id
    * @param {string} id
    */
-  static async getById(id) {
+  static async getBySlug(slug) {
     return await knex('products')
-      .where('id', id)
+      .where('slug', slug)
       .first()
       .then((row) => {
         if (row != undefined) return new Product(row).toJson();
@@ -74,11 +74,11 @@ class ProductsService {
    * @param {Object} body
    * @returns
    */
-  static async update(id, body) {
+  static async update(slug, body) {
     ProductValidate.valid(body);
 
     return await knex('products')
-      .where({ id })
+      .where({ slug })
       .update(body)
       .then((rowCount) => {
         if (rowCount === 0) {
@@ -99,9 +99,9 @@ class ProductsService {
    * @param {String} id
    * @returns
    */
-  static async delete(id) {
+  static async delete(slug) {
     return await knex('products')
-      .where({ id })
+      .where({ slug })
       .del()
       .then((deleted) => {
         if (deleted === 0) throw 'Id atau produk tersebut tidak tersedia';

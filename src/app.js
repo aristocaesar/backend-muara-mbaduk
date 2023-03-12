@@ -5,11 +5,12 @@ const cors = require('cors');
 const path = require('path');
 const app = express();
 
-const { Authentication } = require('./middleware/authentication');
+const { Authorization } = require('./middleware/authorization');
 
 const { testimonyRoutes } = require('./domains/testimony/testimony.routes');
 const { productRoutes } = require('./domains/product/product.routes');
 const { uploadRoutes } = require('./domains/upload/upload.routes');
+const { packageRoutes } = require('./domains/package/package.routes');
 
 app.use(compression());
 app.use(cors());
@@ -30,13 +31,13 @@ app.use((req, res, next) => {
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
 // Authentication
-app.use(Authentication);
+app.use(Authorization);
 
 // Routes ( Version 1 )
 app.use('/api/v1/uploads', uploadRoutes);
-app.use('/api/v1/testimonies', testimonyRoutes);
 app.use('/api/v1/products', productRoutes);
-app.use('/api/v1/packages', () => {});
+app.use('/api/v1/packages', packageRoutes);
+app.use('/api/v1/testimonies', testimonyRoutes);
 
 app.get('*', (req, res) => {
   res.status(404).json({
