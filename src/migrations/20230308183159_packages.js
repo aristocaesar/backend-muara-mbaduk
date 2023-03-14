@@ -23,17 +23,18 @@ exports.up = async function (knex) {
   await knex.schema.createTable('packages_detail', function (table) {
     table.uuid('id').primary();
     table
-      .string('title_package')
+      .string('package')
       .references('title')
       .inTable('packages')
       .onUpdate('CASCADE')
       .onDelete('CASCADE');
     table
-      .string('title_product')
+      .string('product')
       .references('title')
       .inTable('products')
       .onUpdate('CASCADE')
       .onDelete('CASCADE');
+    table.integer('quantity').notNullable().defaultTo(1);
     table
       .dateTime('created_at')
       .notNullable()
@@ -50,6 +51,6 @@ exports.up = async function (knex) {
  * @returns { Promise<void> }
  */
 exports.down = async function (knex) {
+  await knex.schema.dropTableIfExists('packages_detail');
   await knex.schema.dropTableIfExists('packages');
-  await knex.schema.dropSchemaIfExists('packages_detail');
 };
