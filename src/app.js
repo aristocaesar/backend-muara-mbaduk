@@ -11,6 +11,7 @@ const { testimonyRoutes } = require('./domains/testimony/testimony.routes');
 const { productRoutes } = require('./domains/product/product.routes');
 const { uploadRoutes } = require('./domains/upload/upload.routes');
 const { packageRoutes } = require('./domains/package/package.routes');
+const { requestBodyError } = require('./middleware/handle.requestBodyError');
 
 app.use(compression());
 app.use(cors());
@@ -32,6 +33,8 @@ app.use('/static', express.static(path.join(__dirname, 'public')));
 
 // Authentication
 app.use(Authorization);
+// Handle Main Error
+app.use(requestBodyError);
 
 // Routes ( Version 1 )
 app.use('/api/v1/uploads', uploadRoutes);
