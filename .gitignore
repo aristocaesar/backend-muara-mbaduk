@@ -2,3 +2,4 @@ node_modules
 .vscode
 .env
 src/public/
+api_muara_mbaduk.json

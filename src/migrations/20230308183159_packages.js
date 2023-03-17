@@ -24,12 +24,14 @@ exports.up = async function (knex) {
     table.uuid('id').primary();
     table
       .string('package')
+      .notNullable()
       .references('title')
       .inTable('packages')
       .onUpdate('CASCADE')
       .onDelete('CASCADE');
     table
       .string('product')
+      .notNullable()
       .references('title')
       .inTable('products')
       .onUpdate('CASCADE')
