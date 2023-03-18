@@ -8,7 +8,12 @@ exports.up = async function (knex) {
     table.string('title').notNullable().unique();
     table.text('body').notNullable();
     table.string('thumbnail').notNullable();
-    table.string('author').references('fullname').inTable('administrator');
+    table
+      .string('author')
+      .references('id')
+      .inTable('administrator')
+      .onUpdate('CASCADE')
+      .onDelete('SET NULL');
     table
       .dateTime('created_at')
       .notNullable()

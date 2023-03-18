@@ -1,14 +1,12 @@
-const { options } = require('joi');
-
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.up = function (knex) {
-  return knex.schema.createTable('administrator', function (table) {
+exports.up = async function (knex) {
+  await knex.schema.createTable('administrator', function (table) {
     table.uuid('id').primary();
-    table.string('fullname').notNullable().unique();
-    table.string('email').notNullable();
+    table.string('fullname').notNullable();
+    table.string('email').notNullable().unique();
     table.string('password').notNullable();
     table.enu('access', ['active', 'suspend']).defaultTo('active');
     table
@@ -27,5 +25,5 @@ exports.up = function (knex) {
  * @returns { Promise<void> }
  */
 exports.down = async function (knex) {
-  return knex.schema.dropTableIfExists('administrator');
+  await knex.schema.dropTableIfExists('administrator');
 };

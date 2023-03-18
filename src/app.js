@@ -6,12 +6,13 @@ const path = require('path');
 const app = express();
 
 const { Authorization } = require('./middleware/authorization');
+const { requestBodyError } = require('./middleware/handle.requestBodyError');
 
 const { testimonyRoutes } = require('./domains/testimony/testimony.routes');
 const { productRoutes } = require('./domains/product/product.routes');
 const { uploadRoutes } = require('./domains/upload/upload.routes');
 const { packageRoutes } = require('./domains/package/package.routes');
-const { requestBodyError } = require('./middleware/handle.requestBodyError');
+const { adminRoutes } = require('./domains/admin/admin.routes');
 
 app.use(compression());
 app.use(cors());
@@ -40,6 +41,7 @@ app.use(requestBodyError);
 app.use('/api/v1/uploads', uploadRoutes);
 app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/packages', packageRoutes);
+app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/testimonies', testimonyRoutes);
 
 app.get('*', (req, res) => {
