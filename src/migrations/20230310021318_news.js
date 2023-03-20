@@ -5,7 +5,8 @@
 exports.up = async function (knex) {
   await knex.schema.createTable('news', function (table) {
     table.uuid('id').primary();
-    table.string('title').notNullable().unique();
+    table.string('title').notNullable();
+    table.string('slug').notNullable().unique();
     table.text('body').notNullable();
     table.string('thumbnail').notNullable();
     table
