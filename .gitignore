@@ -1,5 +1,5 @@
 node_modules
 .vscode
 .env
-src/public/
+src/public/uploads/*
 api_muara_mbaduk.json
