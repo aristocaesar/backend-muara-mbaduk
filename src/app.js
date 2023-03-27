@@ -2,6 +2,8 @@ require('dotenv').config();
 const compression = require('compression');
 const express = require('express');
 const cors = require('cors');
+const { default: helmet } = require('helmet');
+const cookieParser = require('cookie-parser');
 const path = require('path');
 const app = express();
 
@@ -14,9 +16,17 @@ const { uploadRoutes } = require('./domains/upload/upload.routes');
 const { packageRoutes } = require('./domains/package/package.routes');
 const { adminRoutes } = require('./domains/admin/admin.routes');
 const { newsRoutes } = require('./domains/news/news.routes');
+const { userRoutes } = require('./domains/user/user.routes');
 
+app.use(
+  cors({
+    origin: 'http://localhost',
+    credentials: true,
+  })
+);
+app.use(helmet());
 app.use(compression());
-app.use(cors());
+app.use(cookieParser());
 // allow parse x-www-form-urlencoded / multipart/form-data
 app.use(express.urlencoded({ extended: false }));
 // allow parse application/json
@@ -44,6 +54,7 @@ app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/packages', packageRoutes);
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/news', newsRoutes);
+app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/testimonies', testimonyRoutes);
 
 app.get('*', (req, res) => {
