@@ -6,6 +6,10 @@ const { UserValidate } = require('./user.validate');
 const { Authentication } = require('../../middleware/authentication');
 
 class UserService {
+  /**
+   * Service get all user
+   * @returns Object
+   */
   static async get() {
     return await knex('users')
       .select()
@@ -15,6 +19,10 @@ class UserService {
       });
   }
 
+  /**
+   * Service get user by id
+   * @returns Object
+   */
   static async getById(id) {
     return await knex('users')
       .select()
@@ -29,6 +37,10 @@ class UserService {
       });
   }
 
+  /**
+   * Service login user
+   * @returns Object
+   */
   static async login(token) {
     try {
       const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -86,6 +98,10 @@ class UserService {
     }
   }
 
+  /**
+   * Service verify user
+   * @returns Object
+   */
   static async account(payload) {
     try {
       if (payload == undefined) throw 'Account access expired';
@@ -96,6 +112,10 @@ class UserService {
     }
   }
 
+  /**
+   * Service change access user
+   * @returns Object
+   */
   static async changeAccess(id, body) {
     UserValidate.validChangeStatus(body);
     return await knex('users')

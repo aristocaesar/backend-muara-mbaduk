@@ -30,7 +30,6 @@ class ProductValidate {
     });
 
     const validate = schema.validate(body);
-    console.log(validate);
     if (validate.error != undefined) {
       throw new Error(validate.error.details[0].message);
     }

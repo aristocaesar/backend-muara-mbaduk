@@ -1,17 +1,31 @@
 class Testimony {
-  constructor(id, fullname, profileImage, testimony) {
+  constructor({
+    id,
+    fullname,
+    images,
+    star,
+    description,
+    created_at,
+    updated_at,
+  }) {
     this.id = id;
     this.fullname = fullname;
-    this.profileImage = profileImage;
-    this.testimony = testimony;
+    this.images = images;
+    this.star = star;
+    this.description = description;
+    this.created_at = created_at;
+    this.updated_at = updated_at;
   }
 
   toJSON() {
     return {
       id: this.id,
       fullname: this.fullname,
-      profile_image: this.profileImage,
-      testimony: this.testimony,
+      images: this.images,
+      star: this.star,
+      description: this.description,
+      created_at: this.created_at,
+      updated_at: this.updated_at,
     };
   }
 }

@@ -5,7 +5,8 @@
 exports.up = async function (knex) {
   await knex.schema.createTable('testimonials', function (table) {
     table.uuid('id').primary();
-    table.string('id_user').references('id').inTable('users');
+    table.string('fullname').notNullable().unique();
+    table.string('images').notNullable();
     table.enu('star', [1, 2, 3, 4, 5]).defaultTo(5);
     table.text('description').notNullable();
     table
