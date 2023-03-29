@@ -5,7 +5,18 @@
 exports.up = async function (knex) {
   await knex.schema.createTable('reviews', function (table) {
     table.uuid('id').primary();
-    table.string('id_user').references('id').inTable('users');
+    table
+      .string('id_package')
+      .references('id')
+      .inTable('packages')
+      .onUpdate('CASCADE')
+      .onDelete('CASCADE');
+    table
+      .string('id_user')
+      .references('id')
+      .inTable('users')
+      .onUpdate('CASCADE')
+      .onDelete('CASCADE');
     table.enu('star', [1, 2, 3, 4, 5]).defaultTo(5);
     table.text('description').notNullable();
     table

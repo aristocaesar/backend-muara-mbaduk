@@ -17,6 +17,7 @@ const { packageRoutes } = require('./domains/package/package.routes');
 const { adminRoutes } = require('./domains/admin/admin.routes');
 const { newsRoutes } = require('./domains/news/news.routes');
 const { userRoutes } = require('./domains/user/user.routes');
+const { reviewRoutes } = require('./domains/review/review.routes');
 
 app.use(
   cors({
@@ -56,6 +57,7 @@ app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/news', newsRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/testimonies', testimonyRoutes);
+app.use('/api/v1/reviews', reviewRoutes);
 
 app.get('*', (req, res) => {
   res.status(404).json({
