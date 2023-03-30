@@ -41,6 +41,7 @@ class UploadService {
    * @returns
    */
   static async store(req) {
+    if (req.files == undefined) throw new Error('Harap memasukkan file');
     const files = req.files.map((file) => {
       return {
         id: uuidv4(),

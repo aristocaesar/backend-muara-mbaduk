@@ -3,11 +3,16 @@
  * @returns { Promise<void> }
  */
 exports.up = function (knex) {
-  return knex.schema.createTable('ticket', function (table) {
-    table.bigint('tourist_normal_day').notNullable();
-    table.bigint('tourist_weekend_day').notNullable();
-    table.bigint('transport_2').notNullable();
-    table.bigint('transport_4').notNullable();
+  return knex.schema.createTable('tickets', function (table) {
+    table.uuid('id').primary();
+    table.string('title').notNullable().unique();
+    table.enu('category', ['tourist', 'transport']).defaultTo('tourist');
+    table.bigint('normal_day').notNullable();
+    table.bigint('weekend_day').notNullable();
+    table
+      .dateTime('created_at')
+      .notNullable()
+      .defaultTo(knex.raw('CURRENT_TIMESTAMP'));
     table
       .dateTime('updated_at')
       .notNullable()
@@ -20,5 +25,5 @@ exports.up = function (knex) {
  * @returns { Promise<void> }
  */
 exports.down = function (knex) {
-  return knex.schema.dropTableIfExists('ticket');
+  return knex.schema.dropTableIfExists('tickets');
 };
