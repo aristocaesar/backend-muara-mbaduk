@@ -1,4 +1,6 @@
 const { knex } = require('../../config/database');
+const { Day } = require('../../utils/day');
+const { PackageService } = require('../package/package.services');
 const { Ticket } = require('./ticket.model');
 const { TicketValidate } = require('./ticket.validate');
 const { v4: uuid } = require('uuid');
@@ -11,6 +13,7 @@ class TicketService {
   static async get() {
     return await knex('tickets')
       .select()
+      .orderBy('category', 'asc')
       .then((tickets) => tickets.map((ticket) => new Ticket(ticket).toJson()))
       .catch((error) => {
         throw new Error(error);
@@ -71,6 +74,42 @@ class TicketService {
           throw new Error('Tiket ini sudah tersedia');
         throw new Error(error);
       });
+  }
+
+  /**
+   * Service checkin ticket
+   * @param {Object} body
+   * @returns
+   */
+  static async checkin(body) {
+    try {
+      const available = {
+        date: body.date,
+        weekend: false,
+        camping: body.camping,
+        tickets: [],
+        packages: [],
+      };
+      // Check Weekend
+      available.weekend = Day.checkWeekend(available.date);
+      // Set date to string
+      available.date = Day.dateToString(body.date);
+      // Check Ticket
+      const tickets = await this.get();
+      if (available.camping) {
+        available.tickets = await tickets.filter(
+          (ticket) => ticket.title != 'Tanpa Berkemah'
+        );
+        available.packages = await PackageService.get();
+      } else {
+        available.tickets = await tickets.filter(
+          (ticket) => ticket.title != 'Berkemah'
+        );
+      }
+      return available;
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   /**
