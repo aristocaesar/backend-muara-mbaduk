@@ -26,6 +26,24 @@ class TicketValidate {
       throw new Error(validate.error.details[0].message);
     }
   }
+
+  static checkin(body) {
+    const schema = Joi.object({
+      date: Joi.date().required().messages({
+        'string.empty': 'Tanggal harus terisi',
+        'any.required': 'Tanggal harus terisi',
+      }),
+      camping: Joi.boolean().required().messages({
+        'string.empty': 'Pilihan camping harus terisi',
+        'any.required': 'Pilihan camping harus terisi',
+      }),
+    });
+
+    const validate = schema.validate(body);
+    if (validate.error != undefined) {
+      throw new Error(validate.error.details[0].message);
+    }
+  }
 }
 
 module.exports = { TicketValidate };

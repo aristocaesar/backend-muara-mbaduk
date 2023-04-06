@@ -83,6 +83,8 @@ class TicketService {
    */
   static async checkin(body) {
     try {
+      TicketValidate.checkin(body);
+
       const available = {
         date: body.date,
         weekend: false,

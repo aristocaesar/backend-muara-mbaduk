@@ -5,7 +5,10 @@ class Day {
    * @returns String
    */
   static dateToString(date) {
-    return new Date(date).toLocaleDateString('id', {
+    const dates = date.split('/');
+    return new Date(
+      [dates[1], dates[0], dates[2]].join('/')
+    ).toLocaleDateString('id', {
       weekday: 'long',
       day: '2-digit',
       month: 'long',
