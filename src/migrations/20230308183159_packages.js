@@ -8,6 +8,10 @@ exports.up = async function (knex) {
     table.string('title').notNullable().unique();
     table.string('slug').notNullable().unique();
     table.string('summary').notNullable();
+    table
+      .enu('category', ['general', 'custom'])
+      .defaultTo('general')
+      .notNullable();
     table.text('description').notNullable();
     table.bigint('price').notNullable();
     table.string('image').notNullable();

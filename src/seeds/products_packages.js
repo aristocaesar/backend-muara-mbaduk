@@ -149,6 +149,7 @@ exports.seed = async function (knex) {
       title: 'STANDART 2',
       slug: 'paket-standart-2',
       summary: 'Ini bagian summary',
+      category: 'general',
       description: 'Ini bagian deskripsi',
       price: 115000,
       image:
@@ -159,6 +160,7 @@ exports.seed = async function (knex) {
       title: 'PREMIUM 2',
       slug: 'paket-premium-2',
       summary: 'Ini bagian summary',
+      category: 'general',
       description: 'Ini bagian deskripsi',
       price: 135000,
       image:
@@ -169,6 +171,7 @@ exports.seed = async function (knex) {
       title: 'PREMIUM 4',
       slug: 'paket-premium-4',
       summary: 'Ini bagian summary',
+      category: 'general',
       description: 'Ini bagian deskripsi',
       price: 165000,
       image:

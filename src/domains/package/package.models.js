@@ -4,6 +4,7 @@ class Package {
     title,
     slug,
     summary,
+    category,
     description,
     price,
     image,
@@ -15,6 +16,7 @@ class Package {
     this.title = title;
     this.slug = slug;
     this.summary = summary;
+    this.category = category;
     this.description = description;
     this.price = price;
     this.image = image;
@@ -29,6 +31,7 @@ class Package {
       title: this.title,
       slug: this.slug,
       summary: this.summary,
+      category: this.category,
       description: this.description,
       price: this.price,
       image: this.image,

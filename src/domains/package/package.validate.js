@@ -15,6 +15,10 @@ class PackageValidate {
         'string.empty': 'Deskripsi paket harus terisi',
         'any.required': 'Deskripsi paket harus terisi',
       }),
+      category: Joi.string().valid('general', 'custom').required().messages({
+        'string.empty': 'Kategori paket harus terisi',
+        'any.required': 'Kategori paket harus terisi',
+      }),
       description: Joi.string().required().messages({
         'string.empty': 'Deskripsi paket harus terisi',
         'any.required': 'Deskripsi paket harus terisi',

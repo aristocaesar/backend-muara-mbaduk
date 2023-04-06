@@ -29,6 +29,7 @@ class PackageService {
             title: groupRows[0].title,
             slug: groupRows[0].slug,
             summary: groupRows[0].summary,
+            category: groupRows[0].category,
             description: groupRows[0].description,
             price: groupRows[0].price,
             image: groupRows[0].image,
@@ -76,13 +77,74 @@ class PackageService {
       .leftJoin('packages_detail', 'packages.title', 'packages_detail.package')
       .leftJoin('products', 'products.title', 'packages_detail.product')
       .then((packages) => {
-        return _(packages)
+        const result = _(packages)
           .groupBy('title')
           .map((groupRows) => ({
             id: groupRows[0].id,
             title: groupRows[0].title,
             slug: groupRows[0].slug,
             summary: groupRows[0].summary,
+            category: groupRows[0].category,
+            description: groupRows[0].description,
+            price: groupRows[0].price,
+            image: groupRows[0].image,
+            products:
+              groupRows[0].product_id == null
+                ? []
+                : _.map(
+                    groupRows,
+                    ({
+                      product_id,
+                      product_title,
+                      product_quantity,
+                      product_image,
+                    }) => ({
+                      id: product_id,
+                      title: product_title,
+                      quantity: product_quantity,
+                      image: product_image,
+                    })
+                  ),
+            created_at: groupRows[0].created_at,
+            updated_at: groupRows[0].updated_at,
+          }))
+          .first();
+        if (result === undefined) return [];
+        return result;
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  }
+
+  /**
+   * Service get package by category
+   * @param {String} slug
+   * @returns
+   */
+  static async getByCategory(category) {
+    if (!['general', 'custom'].includes(category))
+      throw new Error('Kategori tidak valid');
+    return knex('packages')
+      .select(
+        'packages.*',
+        'packages_detail.id as product_id',
+        'packages_detail.product as product_title',
+        'packages_detail.quantity as product_quantity',
+        'products.image as product_image'
+      )
+      .where('packages.category', '=', category)
+      .leftJoin('packages_detail', 'packages.title', 'packages_detail.package')
+      .leftJoin('products', 'products.title', 'packages_detail.product')
+      .then((packages) => {
+        const result = _(packages)
+          .groupBy('title')
+          .map((groupRows) => ({
+            id: groupRows[0].id,
+            title: groupRows[0].title,
+            slug: groupRows[0].slug,
+            summary: groupRows[0].summary,
+            category: groupRows[0].category,
             description: groupRows[0].description,
             price: groupRows[0].price,
             image: groupRows[0].image,
@@ -106,6 +168,7 @@ class PackageService {
             created_at: groupRows[0].created_at,
             updated_at: groupRows[0].updated_at,
           }));
+        return result;
       })
       .catch((error) => {
         throw new Error(error);
