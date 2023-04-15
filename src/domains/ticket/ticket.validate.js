@@ -1,4 +1,4 @@
-const Joi = require('joi');
+const Joi = require('joi').extend(require('@joi/date'));
 
 class TicketValidate {
   static valid(body) {
@@ -29,8 +29,8 @@ class TicketValidate {
 
   static checkin(body) {
     const schema = Joi.object({
-      date: Joi.date().required().messages({
-        'string.empty': 'Tanggal harus terisi',
+      date: Joi.date().format('DD/MM/YYYY').required().messages({
+        'date.empty': 'Tanggal harus terisi',
         'any.required': 'Tanggal harus terisi',
       }),
       camping: Joi.boolean().required().messages({

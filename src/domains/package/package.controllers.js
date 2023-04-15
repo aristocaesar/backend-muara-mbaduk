@@ -52,6 +52,31 @@ class PackageController {
   }
 
   /**
+   * Controller get package by category
+   * @param {Request} req
+   * @param {Response} res
+   * @param {Next} next
+   */
+  static async getByCategory(req, res, next) {
+    try {
+      const packages = await PackageService.getByCategory(req.params.category);
+      res.status(200).json({
+        code: 200,
+        status: 'OK',
+        data: packages,
+      });
+    } catch (error) {
+      res.status(400).json({
+        code: 400,
+        status: 'BAD_REQUEST',
+        errors: {
+          message: error.message,
+        },
+      });
+    }
+  }
+
+  /**
    * Controller store package
    * @param {Request} req
    * @param {Response} res

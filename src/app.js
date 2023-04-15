@@ -19,10 +19,11 @@ const { newsRoutes } = require('./domains/news/news.routes');
 const { userRoutes } = require('./domains/user/user.routes');
 const { reviewRoutes } = require('./domains/review/review.routes');
 const { ticketRoutes } = require('./domains/ticket/ticket.routes');
+const { paymentRoutes } = require('./domains/payment/payment.routes');
 
 app.use(
   cors({
-    origin: 'http://localhost',
+    origin: '*',
     credentials: true,
   })
 );
@@ -60,6 +61,7 @@ app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/testimonies', testimonyRoutes);
 app.use('/api/v1/reviews', reviewRoutes);
 app.use('/api/v1/tickets', ticketRoutes);
+app.use('/api/v1/payments', paymentRoutes);
 
 app.get('*', (req, res) => {
   res.status(404).json({

@@ -54,6 +54,27 @@ class TicketService {
       });
   }
 
+  static async generateTickets(payment_id, ticketsDetail) {
+    const { selected, detail } = ticketsDetail.tickets;
+    let tickets = [];
+    for (let i = 0; i < selected.length; i++) {
+      detail.filter((ticket) => {
+        if (ticket.id == selected[i].id) {
+          for (let j = 0; j < selected[i].length; j++) {
+            tickets.push({
+              id: uuid(),
+              payment_id,
+              ticket_id: ticket.id,
+              name: null,
+              identity: null,
+            });
+          }
+        }
+      });
+    }
+    return tickets;
+  }
+
   /**
    * Service store ticket
    * @param {Object} body
@@ -97,17 +118,14 @@ class TicketService {
       // Set date to string
       available.date = Day.dateToString(body.date);
       // Check Ticket
-      const tickets = await this.get();
-      if (available.camping) {
-        available.tickets = await tickets.filter(
-          (ticket) => ticket.title != 'Tanpa Berkemah'
+      available.tickets = await this.get().then((tickets) => {
+        return tickets.filter((ticket) =>
+          available.camping == true
+            ? ticket.title != 'Tanpa Berkemah'
+            : ticket.title != 'Berkemah'
         );
-        available.packages = await PackageService.get();
-      } else {
-        available.tickets = await tickets.filter(
-          (ticket) => ticket.title != 'Berkemah'
-        );
-      }
+      });
+
       return available;
     } catch (error) {
       throw new Error(error);

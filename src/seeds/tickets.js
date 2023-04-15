@@ -26,14 +26,14 @@ exports.seed = async function (knex) {
       title: 'Kendaraan roda 2',
       category: 'transport',
       normal_day: 5000,
-      weekend_day: 0,
+      weekend_day: 5000,
     },
     {
       id: uuid(),
       title: 'Kendaraan roda 4',
       category: 'transport',
       normal_day: 15000,
-      weekend_day: 0,
+      weekend_day: 15000,
     },
   ]);
 };
