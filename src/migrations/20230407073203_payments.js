@@ -26,6 +26,7 @@ exports.up = async function (knex) {
     table
       .enum('status', ['pending', 'settlement', 'expire', 'deny', 'cancel'])
       .defaultTo('pending');
+    table.string('barcode').notNullable();
     table.string('expire_at').notNullable();
     table
       .dateTime('created_at')

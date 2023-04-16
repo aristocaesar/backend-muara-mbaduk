@@ -7,6 +7,7 @@ const { UserService } = require('../user/user.service');
 const { MapArray } = require('../../utils/mapArray');
 const { knex } = require('../../config/database');
 const { TicketService } = require('../ticket/ticket.services');
+const { Barcode } = require('../../utils/barcode');
 
 class PaymentService {
   static async get() {
@@ -55,6 +56,7 @@ class PaymentService {
             day: groupRows[0].day,
             gross_amount: groupRows[0].gross_amount,
             status: groupRows[0].status,
+            barcode: groupRows[0].barcode,
             tickets: _.map(
               groupRows,
               ({
@@ -156,12 +158,26 @@ class PaymentService {
       day: payload.day,
       gross_amount: payload.gross_amount,
       status: payload.status,
+      barcode: null,
       expire_at: payload.expire_at,
     };
+
+    // Generate Ticket Model
     const tickets = await TicketService.generateTickets(
       payment.id,
       payload.tickets
     );
+
+    // Generate Barcode
+    await new Barcode({ text: payment.order_id })
+      .save()
+      .then((path) => {
+        payment.barcode = path;
+      })
+      .catch((error) => {
+        throw error;
+      });
+
     return await knex('payments')
       .insert(payment)
       .then(async () => {
