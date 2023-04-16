@@ -42,7 +42,7 @@ class PaymentService {
       .where({ 'payments.id': id })
       .orWhere({ 'payments.order_id': id })
       .then((payment) => {
-        if (payment == undefined) return [];
+        if (payment == undefined || payment.length == 0) return [];
         return _(payment)
           .groupBy('id')
           .map((groupRows) => ({
@@ -169,7 +169,11 @@ class PaymentService {
         return await knex('ticket_detail')
           .insert(tickets)
           .then(() => {
-            return Object.assign(payment, { tickets });
+            const showTickets = tickets.map((ticket) => {
+              delete ticket.payment_id;
+              return ticket;
+            });
+            return Object.assign(payment, { showTickets });
           })
           .catch((error) => {
             throw error;
