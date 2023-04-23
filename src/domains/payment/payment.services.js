@@ -1,20 +1,27 @@
 const _ = require('lodash');
-const { Mitrans } = require('../../config/mitrans');
+const { Midtrans } = require('../../config/midtrans');
 const { v4: uuid } = require('uuid');
-const { Uniq } = require('../../utils/uniq');
 const { PaymentValidate } = require('./payment.validate');
 const { UserService } = require('../user/user.service');
-const { MapArray } = require('../../utils/mapArray');
 const { knex } = require('../../config/database');
 const { TicketService } = require('../ticket/ticket.services');
 const { Barcode } = require('../../utils/barcode');
+const { Day } = require('../../utils/day');
+const { PackageService } = require('../package/package.services');
+const { Uniq } = require('../../utils/uniq');
 
 class PaymentService {
+  /**
+   * Get all transactions
+   * @returns
+   */
   static async get() {
     return await knex('payments')
       .select()
+      .orderBy('created_at', 'desc')
       .then((payments) =>
         payments.map((payment) => {
+          payment.camping = payment.camping == 1 ? true : false;
           return payment;
         })
       )
@@ -23,226 +30,379 @@ class PaymentService {
       });
   }
 
+  /**
+   * Get transaction by id
+   * @param {String} id
+   * @returns
+   */
   static async getById(id) {
     return await knex('payments')
       .select(
         'payments.*',
-        'ticket_detail.id as id_ticket',
-        'ticket_detail.payment_id',
-        'ticket_detail.name',
-        'ticket_detail.identity',
-        'ticket_detail.created_at',
-        'ticket_detail.updated_at',
+        'payment_detail.name_bank as bank',
+        'payment_detail.va_bank as va_number',
+        'payment_tickets.id as id_ticket',
+        'payment_tickets.payment_id',
+        'payment_tickets.name',
+        'payment_tickets.identity',
+        'payment_tickets.created_at',
+        'payment_tickets.updated_at',
         'tickets.id as ticket_id',
         'tickets.title',
         'tickets.normal_day',
         'tickets.weekend_day'
       )
-      .leftJoin('ticket_detail', 'payments.id', 'ticket_detail.payment_id')
-      .leftJoin('tickets', 'tickets.id', 'ticket_detail.ticket_id')
+      .leftJoin('payment_detail', 'payments.id', 'payment_detail.payment_id')
+      .leftJoin('payment_tickets', 'payments.id', 'payment_tickets.payment_id')
+      .leftJoin('tickets', 'tickets.id', 'payment_tickets.ticket_id')
       .where({ 'payments.id': id })
       .orWhere({ 'payments.order_id': id })
-      .then((payment) => {
+      .then(async (payment) => {
         if (payment == undefined || payment.length == 0) return [];
-        return _(payment)
+        const transaction = _(payment)
           .groupBy('id')
           .map((groupRows) => ({
             id: groupRows[0].id,
             order_id: groupRows[0].order_id,
             user_id: groupRows[0].user_id,
-            package_id: groupRows[0].package_id,
+            barcode: groupRows[0].barcode,
+            camping: groupRows[0].camping == 1 ? true : false,
             type: groupRows[0].type,
-            visit: groupRows[0].visit,
-            day: groupRows[0].day,
+            date: groupRows[0].date,
+            date_types: groupRows[0].date_types,
             gross_amount: groupRows[0].gross_amount,
             status: groupRows[0].status,
-            barcode: groupRows[0].barcode,
-            tickets: _.map(
-              groupRows,
-              ({
-                id_ticket,
-                title,
-                normal_day,
-                weekend_day,
-                name,
-                identity,
-              }) => ({
-                id: id_ticket,
-                title,
-                price: groupRows[0].day == 'weekend' ? weekend_day : normal_day,
-                name,
-                identity,
-              })
-            ),
+            va_numbers: {
+              bank: groupRows[0].bank,
+              va_number: groupRows[0].va_number,
+            },
+            packages: null,
+            tickets: null,
             expire_at: groupRows[0].expire_at,
             created_at: groupRows[0].created_at,
             updated_at: groupRows[0].updated_at,
           }))
           .first();
+
+        await knex('payment_packages')
+          .select(
+            'payment_packages.id',
+            'packages.title',
+            'packages.price',
+            'payment_packages.quantity'
+          )
+          .leftJoin('packages', 'payment_packages.package_id', 'packages.id')
+          .where('payment_id', transaction.id)
+          .then((packages) => {
+            if (packages == undefined) transaction.packages = [];
+            transaction.packages = packages;
+          });
+
+        await knex('payment_tickets')
+          .select(
+            'payment_tickets.id',
+            'tickets.title',
+            'tickets.category',
+            `${
+              transaction.date_types == 'normal'
+                ? 'tickets.normal_day'
+                : 'tickets.weekend_day'
+            } as price`,
+            'payment_tickets.name',
+            'payment_tickets.identity'
+          )
+          .leftJoin('tickets', 'payment_tickets.ticket_id', 'tickets.id')
+          .where('payment_id', transaction.id)
+          .orderBy('tickets.category', 'asc')
+          .then((tickets) => {
+            if (tickets == undefined) transaction.tickets = [];
+            transaction.tickets = tickets;
+          });
+
+        return transaction;
       })
       .catch((error) => {
         throw Error(error);
       });
   }
 
+  /**
+   * Get all transactions where id user
+   * @param {String} id
+   * @returns
+   */
   static async getByUser(id) {
     return await knex('payments')
       .select()
       .where({ user_id: id })
-      .then((payment) => {
-        if (payment == undefined) return [];
-        return payment;
+      .orderBy('created_at', 'desc')
+      .then((payments) => {
+        if (payments == undefined) return [];
+        return payments.map((payment) => {
+          payment.camping = payment.camping == 1 ? true : false;
+          return payment;
+        });
       })
       .catch((error) => {
         throw Error(error);
       });
   }
 
-  static async checkout(type, body) {
+  /**
+   * Service handle user checkout
+   * @param {String} type
+   * @param {Object} payload
+   * @returns
+   */
+  static async checkout(type, payload) {
     try {
       // Check type payment
       if (!['cash', 'bank'].includes(type))
-        throw 'Tipe pembayaran tidak sesuai';
+        throw 'Tipe pembayaran tidak tersedia';
+
+      // Check payload payment
+      PaymentValidate.pay(payload);
+
+      // Get user
+      const user = await UserService.getById(payload.user_id);
+      if (user.length == 0) throw 'User tidak tersedia';
+
+      // Check Valid Date
+      const day = new Day(payload.date);
+      if (day.isExpired()) throw 'Tanggal telah kadaluarsa';
+
+      // Check valid bank
       if (type == 'cash') {
-        // Create invoice Cash
-        return await this.paymentCash(body);
-      } else {
-        // Create invoice Transfer Bank
-        // -> Create payment
-        // -> Create payment_detail
-        // -> Create ticket
+        if (payload.bank != null)
+          throw 'Bank tidak dapat digunakan jika pembayaran melalui cash';
+      } else if (type == 'bank') {
+        if (payload.bank == null) throw 'Harap mengisi pilihan bank';
       }
-      return;
+
+      // Generate valid packages with quantity and set gross_amount
+      if (payload.camping == true) {
+        if (_.isNull(payload.packages)) {
+          throw 'Harap mengisi paket camping';
+        }
+      }
+      const packages = await PackageService.packagesToPayment(payload.packages);
+
+      // Generate valid tickets with quantity and set gross_amount
+      const tickets = await TicketService.ticketsToPayment(
+        payload.camping,
+        day.isWeekend(),
+        payload.tickets
+      );
+
+      // Set gross amount
+      const gross_amount = await this.getGrossAmount(packages, tickets);
+
+      // Make invoice
+      const invoice = await this.createInvoice({
+        user,
+        date: payload.date,
+        date_types: day.isWeekend() == false ? 'normal' : 'weekend',
+        type,
+        camping: payload.camping,
+        bank: payload.bank,
+        gross_amount,
+        packages: packages.items,
+        tickets: tickets.items,
+      });
+
+      return invoice;
     } catch (error) {
       throw new Error(error);
     }
   }
 
-  static async paymentCash(payload) {
-    PaymentValidate.cash(payload);
-
-    const { user_id, type, visit, day, tickets } = payload;
-
-    // Get user
-    const user = await UserService.getById(user_id);
-    if (user.length == 0) throw 'User tidak tersedia';
-
-    // Set ticket and get
-    const ticketsGroup = MapArray.keyLength(MapArray.group(tickets, 'id'));
-    const ticketsDetail = await this.getTicketsDetail(ticketsGroup, day);
-
-    // Make Invoice
-    const invoice = await this.createPayment({
-      user_id: user.id,
-      type,
-      visit,
-      day,
-      gross_amount: ticketsDetail.gross_amount,
-      status: 'pending',
-      expire_at: 0,
-      tickets: ticketsDetail,
-    });
-    return invoice;
+  /**
+   * Function get gross amount on transaction
+   * @param {Object} packages
+   * @param {Object} tickets
+   * @returns
+   */
+  static async getGrossAmount(packages, tickets) {
+    const tax = 5000;
+    return packages.gross_amount + tickets.gross_amount + tax;
   }
 
-  static async paymentBank(payload) {}
-
-  static async createPayment(payload) {
+  /**
+   * Service create invoice
+   * @param {Object} payload
+   * @returns
+   */
+  static async createInvoice(payload) {
     const payment = {
       id: uuid(),
-      order_id: `MDK${Uniq.randomNumberRange(100000000, 999999999)}`,
-      user_id: payload.user_id,
-      package_id: payload.package_id || null,
+      order_id: `MDK${Uniq.randomNumbers(9)}`,
+      user_id: payload.user.id,
+      transaction_id: null,
+      camping: payload.camping,
       type: payload.type,
-      visit: payload.visit,
-      day: payload.day,
+      date: payload.date,
+      date_types: payload.date_types,
       gross_amount: payload.gross_amount,
-      status: payload.status,
       barcode: null,
-      expire_at: payload.expire_at,
+      expire_at: new Day(payload.date).expired(12),
     };
 
-    // Generate Ticket Model
-    const tickets = await TicketService.generateTickets(
-      payment.id,
-      payload.tickets
-    );
+    // Check type
+    let bank = {
+      merchant: null,
+      va_numbers: {
+        bank: null,
+        va_number: null,
+      },
+    };
+    if (payload.type == 'bank') {
+      // Create payment to bank
+      await new Midtrans()
+        .createTransaction({
+          order_id: payment.order_id,
+          bank: payload.bank,
+          gross_amount: payment.gross_amount,
+          fullname: payload.user.fullname,
+          email: payload.user.email,
+        })
+        .then((transaction) => {
+          payment.transaction_id = transaction.transaction_id;
+          bank.merchant = transaction.merchant_id;
+          bank.va_numbers.bank = transaction.va_numbers[0].bank;
+          bank.va_numbers.va_number = transaction.va_numbers[0].va_number;
+        });
+    }
 
-    // Generate Barcode
-    await new Barcode({ text: payment.order_id })
-      .save()
-      .then((path) => {
-        payment.barcode = path;
+    const payment_detail = {
+      id: uuid(),
+      payment_id: payment.id,
+      merchant: bank.merchant,
+      name_bank: bank.va_numbers.bank,
+      va_bank: bank.va_numbers.va_number,
+    };
+
+    const payment_packages = payload.packages.map((pkg) => {
+      return {
+        id: uuid(),
+        payment_id: payment.id,
+        package_id: pkg.id,
+        quantity: pkg.quantity,
+      };
+    });
+
+    const payment_tickets = payload.tickets.map((tct) => ({
+      id: uuid(),
+      payment_id: payment.id,
+      ticket_id: tct.id,
+      name: tct.name,
+      identity: tct.identity,
+    }));
+
+    // Make Barcode
+    payment.barcode = await new Barcode({ text: payment.order_id }).save();
+
+    // Insert to database
+    return await knex('payments')
+      .insert(payment)
+      .then(async () => {
+        // When payment types is bank
+        if (payload.type == 'bank') {
+          await knex('payment_detail')
+            .insert(payment_detail)
+            .catch((error) => {
+              throw error;
+            });
+        }
+
+        // When camping
+        if (payload.camping) {
+          await knex('payment_packages')
+            .insert(payment_packages)
+            .catch((error) => {
+              throw error;
+            });
+        }
+
+        // Insert tickets
+        await knex('payment_tickets')
+          .insert(payment_tickets)
+          .catch((error) => {
+            throw error;
+          });
+
+        return payment;
       })
       .catch((error) => {
         throw error;
       });
+  }
+
+  /**
+   * Service handle notification callback mitrans
+   * @param {Object} payload
+   */
+  static async notification(payload) {
+    await Midtrans.core()
+      .transaction.notification(payload)
+      .then(async (statusResponse) => {
+        let transactionId = statusResponse.transaction_id;
+        let transactionStatus = statusResponse.transaction_status;
+
+        await this.changeStatus(transactionId, transactionStatus);
+      })
+      .catch((error) => {
+        throw error;
+      });
+  }
+
+  /**
+   * Service update status transaction
+   * @param {Object} payload
+   */
+  static async updateStatus(payload) {
+    PaymentValidate.changeStatus(payload);
 
     return await knex('payments')
-      .insert(payment)
-      .then(async () => {
-        // Create Ticket
-        return await knex('ticket_detail')
-          .insert(tickets)
+      .select()
+      .where({ id: payload.id })
+      .first()
+      .then(async (transaction) => {
+        if (transaction == undefined) throw 'Id tersebut tidak tersedia';
+
+        if (transaction.bank != null || transaction.type == 'bank')
+          throw 'Memperbarui status hanya dapat dilakukan pada pembayaran cash';
+
+        return await this.changeStatus(payload.id, payload.status)
           .then(() => {
-            const showTickets = tickets.map((ticket) => {
-              delete ticket.payment_id;
-              return ticket;
-            });
-            return Object.assign(payment, { showTickets });
+            return {
+              id: payload.id,
+              status: payload.status,
+            };
           })
           .catch((error) => {
             throw error;
           });
       })
       .catch((error) => {
-        throw error;
-      });
-  }
-
-  static async getTicketsDetail(ticketsGroup, day) {
-    let gross_amount = 0;
-    const tickets = await TicketService.get();
-    const ticketSelected = [];
-    const tax = 5000;
-    for (let i = 0; i < ticketsGroup.length; i++) {
-      tickets.filter((tct) => {
-        if (tct.id == ticketsGroup[i].id) {
-          ticketSelected.push(tct);
-          const price = day == 'weekend' ? tct.weekend_day : tct.normal_day;
-          gross_amount += price * ticketsGroup[i].length;
-        }
-      });
-    }
-    if (gross_amount == 0) throw 'Harap memasukan tiket yang valid';
-    return {
-      tickets: { selected: ticketsGroup, detail: ticketSelected },
-      gross_amount: (gross_amount += tax),
-    };
-  }
-
-  static async charge(payload) {
-    const params = {
-      payment_type: 'bank_transfer',
-      transaction_details: {
-        gross_amount: 10000,
-        order_id: `MDK${Uniq.randomNumberRange(100000000, 999999999)}`,
-      },
-      bank_transfer: {
-        bank: 'bca',
-      },
-      customer_details: {
-        first_name: 'Aristo caesar pratama',
-        email: 'aristo.belakang@gmail.com',
-      },
-    };
-    return Mitrans.core()
-      .charge(params)
-      .then((chargeResponse) => {
-        return chargeResponse;
-      })
-      .catch((error) => {
         throw new Error(error);
+      });
+  }
+
+  /**
+   * Service change status transaction
+   * @param {uuid} transaction_id
+   * @param {String} status
+   * @returns
+   */
+  static async changeStatus(transaction_id, status) {
+    if (!['pending', 'settlement', 'expire', 'deny', 'cancel'].includes(status))
+      throw 'Status order tidak valid';
+
+    return await knex('payments')
+      .where({ transaction_id })
+      .orWhere({ id: transaction_id })
+      .update({
+        status,
       });
   }
 }
