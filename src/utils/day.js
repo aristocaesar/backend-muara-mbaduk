@@ -1,26 +1,49 @@
+const Joi = require('joi').extend(require('@joi/date'));
+
 class Day {
+  constructor(date) {
+    this.date = this.valid(date);
+  }
+
   /**
-   * Date to string format dd/m/yyyy
-   * @param {String} date
-   * @returns String
+   * Check format date
+   * @param {string} date
+   * @returns
    */
-  static dateToString(date) {
-    const dates = date.split('/');
-    return new Date(
-      [dates[1], dates[0], dates[2]].join('/')
-    ).toLocaleDateString('id', {
-      weekday: 'long',
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric',
+  valid(date) {
+    const schema = Joi.date().format('DD/MM/YYYY').required().messages({
+      'date.empty': 'Tanggal harus terisi',
+      'any.required': 'Tanggal harus terisi',
     });
+    const validate = schema.validate(date);
+    if (validate.error != undefined) {
+      throw validate.error.details[0].message;
+    }
+    return date;
+  }
+
+  /**
+   * Convert input date to standart date
+   * @returns
+   */
+  toStandart() {
+    const date = this.date.split('/');
+    return new Date([date[1], date[0], date[2]].join('/'));
+  }
+
+  /**
+   * Convert time milesecond to second
+   * @returns
+   */
+  toSecond() {
+    return Math.floor(this.toStandart().getTime() / 1000);
   }
 
   /**
    * Get date now mm/dd/yyyy
    * @returns String
    */
-  static today() {
+  today() {
     return new Date().toLocaleDateString();
   }
 
@@ -28,27 +51,38 @@ class Day {
    * Get milisecond date now
    * @returns Number
    */
-  static todayMilisecond() {
-    return new Date(this.today()).getTime();
+  todaySecond() {
+    const now = new Date().toLocaleDateString();
+    return Math.floor(new Date(now).getTime() / 1000);
   }
 
   /**
-   * Check weekend day with format dd/mm/yyyy
+   * Check day is less today
+   * @returns
+   */
+  isExpired() {
+    return this.toSecond() >= this.todaySecond() ? false : true;
+  }
+
+  /**
+   * Check weekend
    * @param {String} date
    * @returns Boolean
    */
-  static checkWeekend(date) {
-    const dates = date.split('/');
-    const dateSelected = new Date([dates[1], dates[0], dates[2]].join('/'));
-    // Check valid date
-    if (dateSelected instanceof Date && isNaN(dateSelected))
-      throw 'Tanggal tidak valid';
-    // Check date selected less then date now
-    if (dateSelected.getTime() < this.todayMilisecond()) {
-      throw 'Tanggal kadaluarsa';
-    }
-    const day = dateSelected.getDay();
+  isWeekend() {
+    if (this.isExpired()) throw 'Tanggal telah kadaluarsa';
+    const day = this.toStandart().getDay();
     return day == 0 || day == 6;
+  }
+
+  /**
+   * Set expire time based on minute
+   * @param {number} hours
+   * @returns
+   */
+  expired(hours) {
+    let now = this.todaySecond();
+    return (now += hours * 3600);
   }
 }
 

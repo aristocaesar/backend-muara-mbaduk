@@ -13,20 +13,17 @@ exports.up = async function (knex) {
       .inTable('users')
       .onUpdate('CASCADE')
       .onDelete('CASCADE');
-    table
-      .uuid('package_id')
-      .references('id')
-      .inTable('packages')
-      .onUpdate('CASCADE')
-      .onDelete('CASCADE');
+    table.uuid('transaction_id');
+    table.boolean('camping', [true, false]).defaultTo(true).notNullable();
     table.enu('type', ['cash', 'bank']).defaultTo('bank');
-    table.string('visit').notNullable();
-    table.enu('day', ['normal', 'weekend']);
+    table.string('date').notNullable();
+    table.enu('date_types', ['normal', 'weekend']);
     table.bigint('gross_amount').notNullable();
     table
       .enum('status', ['pending', 'settlement', 'expire', 'deny', 'cancel'])
       .defaultTo('pending');
-    table.string('expire_at').notNullable();
+    table.string('barcode').notNullable();
+    table.bigint('expire_at').notNullable();
     table
       .dateTime('created_at')
       .notNullable()
@@ -58,7 +55,32 @@ exports.up = async function (knex) {
       .defaultTo(knex.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
   });
 
-  await knex.schema.createTable('ticket_detail', function (table) {
+  await knex.schema.createTable('payment_packages', function (table) {
+    table.uuid('id').primary();
+    table
+      .uuid('payment_id')
+      .references('id')
+      .inTable('payments')
+      .onUpdate('CASCADE')
+      .onDelete('CASCADE');
+    table
+      .uuid('package_id')
+      .references('id')
+      .inTable('packages')
+      .onUpdate('CASCADE')
+      .onDelete('CASCADE');
+    table.integer('quantity').notNullable();
+    table
+      .dateTime('created_at')
+      .notNullable()
+      .defaultTo(knex.raw('CURRENT_TIMESTAMP'));
+    table
+      .dateTime('updated_at')
+      .notNullable()
+      .defaultTo(knex.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+  });
+
+  await knex.schema.createTable('payment_tickets', function (table) {
     table.uuid('id').primary();
     table
       .uuid('payment_id')
@@ -90,7 +112,8 @@ exports.up = async function (knex) {
  * @returns { Promise<void> }
  */
 exports.down = async function (knex) {
-  await knex.schema.dropTableIfExists('ticket_detail');
+  await knex.schema.dropTableIfExists('payment_packages');
+  await knex.schema.dropTableIfExists('payment_tickets');
   await knex.schema.dropTableIfExists('payment_detail');
   await knex.schema.dropTableIfExists('payments');
 };

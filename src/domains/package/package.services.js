@@ -10,7 +10,7 @@ class PackageService {
    * @returns
    */
   static async get() {
-    return knex('packages')
+    return await knex('packages')
       .select(
         'packages.*',
         'packages_detail.id as product_id',
@@ -173,6 +173,35 @@ class PackageService {
       .catch((error) => {
         throw new Error(error);
       });
+  }
+
+  static async packagesToPayment(packages) {
+    const allPackages = await this.get();
+    let gross_amount = 0;
+    let packagesValid = [];
+
+    for (let i = 0; i < packages.length; i++) {
+      allPackages
+        .filter((pkg) => {
+          if (pkg.id == packages[i].id) {
+            packagesValid.push({
+              id: pkg.id,
+              quantity: packages[i].quantity,
+              price: pkg.price,
+            });
+            gross_amount += pkg.price * packages[i].quantity;
+          }
+        })
+        .value();
+    }
+
+    if (gross_amount == 0 || packagesValid.length == 0)
+      throw 'Paket yang dimasukkan tidak valid';
+
+    return {
+      items: packagesValid,
+      gross_amount,
+    };
   }
 
   /**

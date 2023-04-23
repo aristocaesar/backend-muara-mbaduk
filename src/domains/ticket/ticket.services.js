@@ -1,3 +1,4 @@
+const { result } = require('lodash');
 const { knex } = require('../../config/database');
 const { Day } = require('../../utils/day');
 const { PackageService } = require('../package/package.services');
@@ -54,27 +55,6 @@ class TicketService {
       });
   }
 
-  static async generateTickets(payment_id, ticketsDetail) {
-    const { selected, detail } = ticketsDetail.tickets;
-    let tickets = [];
-    for (let i = 0; i < selected.length; i++) {
-      detail.filter((ticket) => {
-        if (ticket.id == selected[i].id) {
-          for (let j = 0; j < selected[i].length; j++) {
-            tickets.push({
-              id: uuid(),
-              payment_id,
-              ticket_id: ticket.id,
-              name: null,
-              identity: null,
-            });
-          }
-        }
-      });
-    }
-    return tickets;
-  }
-
   /**
    * Service store ticket
    * @param {Object} body
@@ -108,28 +88,104 @@ class TicketService {
 
       const available = {
         date: body.date,
-        weekend: false,
+        date_types: false,
         camping: body.camping,
         tickets: [],
         packages: [],
       };
+
       // Check Weekend
-      available.weekend = Day.checkWeekend(available.date);
-      // Set date to string
-      available.date = Day.dateToString(body.date);
+      available.date_types =
+        new Day(available.date).isWeekend() == false ? 'normal' : 'weekend';
+
       // Check Ticket
       available.tickets = await this.get().then((tickets) => {
-        return tickets.filter((ticket) =>
+        const items = tickets.filter((ticket) =>
           available.camping == true
             ? ticket.title != 'Tanpa Berkemah'
             : ticket.title != 'Berkemah'
         );
+        return items.map((item) => {
+          return {
+            id: item.id,
+            title: item.title,
+            category: item.category,
+            price:
+              available.date_types == 'normal'
+                ? item.normal_day
+                : item.weekend_day,
+          };
+        });
       });
+
+      // Get Packages when camping == true
+      available.packages =
+        available.camping == true
+          ? await PackageService.getByCategory('general')
+          : [];
 
       return available;
     } catch (error) {
       throw new Error(error);
     }
+  }
+
+  /**
+   * Service generate tickets for transactios
+   * @param {String} camping
+   * @param {String} date_types
+   * @param {Object} tickets
+   * @returns
+   */
+  static async ticketsToPayment(camping, date_types, tickets) {
+    const allTickets = await this.get();
+    let gross_amount = 0;
+    let ticketsValid = [];
+
+    for (let i = 0; i < tickets.length; i++) {
+      for (let j = 0; j < allTickets.length; j++) {
+        // Check when same id
+        if (tickets[i].id == allTickets[j].id) {
+          // Check when ticket camping
+          if (camping) {
+            if (allTickets[j].category != 'transport') {
+              if (tickets[i].name == null || tickets[i].identity == null) {
+                throw 'Harap melengkapi identitas';
+              }
+            } else {
+              if (tickets[i].identity == null) {
+                throw 'Harap melengkapi identitas';
+              }
+            }
+          }
+
+          // Create information ticket
+          ticketsValid.push({
+            id: allTickets[j].id,
+            price:
+              date_types == 'normal'
+                ? allTickets[j].normal_day
+                : allTickets[j].weekend_day,
+            name: camping == true ? tickets[i].name : null,
+            identity: camping == true ? tickets[i].identity : null,
+          });
+
+          // Set price tickets
+          gross_amount +=
+            date_types == 'normal'
+              ? allTickets[j].normal_day
+              : allTickets[j].weekend_day;
+        }
+      }
+    }
+
+    if (gross_amount == 0 || ticketsValid.length == 0)
+      throw 'Tiket yang dimasukkan tidak valid';
+
+    return {
+      items: ticketsValid,
+      gross_amount,
+    };
   }
 
   /**
