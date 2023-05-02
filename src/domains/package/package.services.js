@@ -175,6 +175,11 @@ class PackageService {
       });
   }
 
+  /**
+   * Service generate packages to detail payment
+   * @param {Object} packages
+   * @returns
+   */
   static async packagesToPayment(packages) {
     const allPackages = await this.get();
     let gross_amount = 0;
@@ -213,6 +218,22 @@ class PackageService {
     PackageValidate.valid(body);
 
     const packageItems = Object.assign({ id: uuid() }, body);
+    return await knex('packages')
+      .insert(packageItems)
+      .then(() => new Package(packageItems))
+      .catch((error) => {
+        if (error.code == 'ER_DUP_ENTRY') {
+          throw new Error('Paket ini sudah tersedia');
+        }
+        throw new Error(error);
+      });
+  }
+
+  static async customPackage(payload) {
+    const pkg = Object.assign({ category: 'custom' }, payload);
+    PackageValidate.valid(pkg);
+
+    const packageItems = Object.assign({ id: uuid() }, pkg);
     return await knex('packages')
       .insert(packageItems)
       .then(() => new Package(packageItems))

@@ -9,7 +9,10 @@ const route = Router();
 route.get('/', PackageController.get);
 route.get('/:slug', PackageController.getBySlug);
 route.get('/category/:category', PackageController.getByCategory);
+
 route.post('/', PackageController.store);
+route.post('/custom-package', PackageController.customPackage);
+
 route.put('/:slug', PackageController.update);
 route.delete('/:slug', PackageController.delete);
 
