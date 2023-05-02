@@ -180,6 +180,31 @@ class PackageController {
   }
 
   /**
+   * Controller custom package
+   * @param {Request} req
+   * @param {Response} res
+   * @param {Next} next
+   */
+  static async customPackage(req, res, next) {
+    try {
+      const customPackage = await PackageService.customPackage(req.body);
+      res.status(201).json({
+        code: 201,
+        status: 'CREATED',
+        data: customPackage,
+      });
+    } catch (error) {
+      res.status(400).json({
+        code: 400,
+        status: 'BAD_REQUEST',
+        errors: {
+          message: error.message,
+        },
+      });
+    }
+  }
+
+  /**
    * Controller update product in package by id
    * @param {Request} req
    * @param {Response} res
