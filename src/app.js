@@ -24,7 +24,7 @@ const { faqRoutes } = require('./domains/faq/faq.routes');
 
 app.use(
   cors({
-    origin: `'${process.env.ORIGIN}'`,
+    origin: `${process.env.ORIGIN}`,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,

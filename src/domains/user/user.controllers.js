@@ -60,7 +60,7 @@ class UserController {
   static async login(req, res, next) {
     try {
       const logined = await UserService.login(req.body.token);
-      res.cookie('MUARA_MBADUK', logined.token, {
+      await res.cookie('MUARA_MBADUK', logined.token, {
         maxAge: 604800000,
         httpOnly: true,
         secure: true,
@@ -69,7 +69,7 @@ class UserController {
       res.status(200).json({
         code: 200,
         status: 'OK',
-        data: logined.user,
+        data: logined.token,
       });
     } catch (error) {
       res.status(400).json({

@@ -64,11 +64,8 @@ class UserService {
               email: payload.email,
               images: payload.picture,
             };
-            return await knex('users')
+            await knex('users')
               .insert(_user)
-              .then(() => {
-                return new User(_user).toJson();
-              })
               .catch((error) => {
                 throw error;
               });
@@ -87,7 +84,6 @@ class UserService {
           });
           return {
             token: tokenAccess,
-            user: new User(user).toJson(),
           };
         })
         .catch((error) => {
