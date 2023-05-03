@@ -63,7 +63,7 @@ class UserController {
       res.cookie('MUARA_MBADUK', logined.token, {
         maxAge: 604800000,
         httpOnly: true,
-        secure: true,
+        secure: false,
         sameSite: 'none',
       });
       res.status(200).json({
