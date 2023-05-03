@@ -69,11 +69,12 @@ class UserService {
               .catch((error) => {
                 throw error;
               });
+          } else {
+            /**
+             * When user registered but user access suspend
+             */
+            if (user.access == 'suspend') throw 'Akun anda ditangguhkan';
           }
-          /**
-           * When user registered but user access suspend
-           */
-          if (user.access == 'suspend') throw 'Akun anda ditangguhkan';
           /**
            * Generate token JWT
            */
