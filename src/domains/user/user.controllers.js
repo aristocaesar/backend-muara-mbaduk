@@ -64,6 +64,7 @@ class UserController {
         maxAge: 604800000,
         httpOnly: true,
         secure: true,
+        sameSite: 'strict',
       });
       res.status(200).json({
         code: 200,
