@@ -13,7 +13,7 @@ exports.seed = async function (knex) {
       slug: 'tenda-tendaki-kap-2-orang',
       description: 'ini adalah deskripsi',
       image:
-        'http://localhost:3000/static/uploads/1678611031380-B356DDBC-2C73-4842-A274-11EC1EBC31EF.png',
+        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
       price: 60000,
       compensation: 100000,
     },
@@ -23,7 +23,7 @@ exports.seed = async function (knex) {
       slug: 'tenda-miss-borneo-kap-2-orang',
       description: 'ini adalah deskripsi',
       image:
-        'http://localhost:3000/static/uploads/1678611031380-B356DDBC-2C73-4842-A274-11EC1EBC31EF.png',
+        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
       price: 80000,
       compensation: 125000,
     },
@@ -33,7 +33,7 @@ exports.seed = async function (knex) {
       slug: 'tenda-miss-borneo-kap-4-orang',
       description: 'ini adalah deskripsi',
       image:
-        'http://localhost:3000/static/uploads/1678611031380-B356DDBC-2C73-4842-A274-11EC1EBC31EF.png',
+        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
       price: 100000,
       compensation: 150000,
     },
@@ -43,7 +43,7 @@ exports.seed = async function (knex) {
       slug: 'kompor',
       description: 'ini adalah deskripsi',
       image:
-        'http://localhost:3000/static/uploads/1678611031380-B356DDBC-2C73-4842-A274-11EC1EBC31EF.png',
+        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
       price: 20000,
       compensation: 50000,
     },
@@ -54,7 +54,7 @@ exports.seed = async function (knex) {
       slug: 'gas-kaleng',
       description: 'ini adalah deskripsi',
       image:
-        'http://localhost:3000/static/uploads/1678611031380-B356DDBC-2C73-4842-A274-11EC1EBC31EF.png',
+        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
       price: 15000,
       compensation: 20000,
     },
@@ -65,7 +65,7 @@ exports.seed = async function (knex) {
       slug: 'nesting',
       description: 'ini adalah deskripsi',
       image:
-        'http://localhost:3000/static/uploads/1678611031380-B356DDBC-2C73-4842-A274-11EC1EBC31EF.png',
+        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
       price: 20000,
       compensation: 50000,
     },
@@ -75,7 +75,7 @@ exports.seed = async function (knex) {
       slug: 'lampu-tenda',
       description: 'ini adalah deskripsi',
       image:
-        'http://localhost:3000/static/uploads/1678611031380-B356DDBC-2C73-4842-A274-11EC1EBC31EF.png',
+        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
       price: 10000,
       compensation: 15000,
     },
@@ -85,7 +85,7 @@ exports.seed = async function (knex) {
       slug: 'kursi-lipat',
       description: 'ini adalah deskripsi',
       image:
-        'http://localhost:3000/static/uploads/1678611031380-B356DDBC-2C73-4842-A274-11EC1EBC31EF.png',
+        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
       price: 15000,
       compensation: 25000,
     },
@@ -95,7 +95,7 @@ exports.seed = async function (knex) {
       slug: 'meja-kamping',
       description: 'ini adalah deskripsi',
       image:
-        'http://localhost:3000/static/uploads/1678611031380-B356DDBC-2C73-4842-A274-11EC1EBC31EF.png',
+        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
       price: 15000,
       compensation: 25000,
     },
@@ -105,7 +105,7 @@ exports.seed = async function (knex) {
       slug: 'matras',
       description: 'ini adalah deskripsi',
       image:
-        'http://localhost:3000/static/uploads/1678611031380-B356DDBC-2C73-4842-A274-11EC1EBC31EF.png',
+        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
       price: 10000,
       compensation: 15000,
     },
@@ -115,7 +115,7 @@ exports.seed = async function (knex) {
       slug: 'panci',
       description: 'ini adalah deskripsi',
       image:
-        'http://localhost:3000/static/uploads/1678611031380-B356DDBC-2C73-4842-A274-11EC1EBC31EF.png',
+        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
       price: 10000,
       compensation: 15000,
     },
@@ -125,7 +125,7 @@ exports.seed = async function (knex) {
       slug: 'cangkir',
       description: 'ini adalah deskripsi',
       image:
-        'http://localhost:3000/static/uploads/1678611031380-B356DDBC-2C73-4842-A274-11EC1EBC31EF.png',
+        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
       price: 5000,
       compensation: 10000,
     },
@@ -135,7 +135,7 @@ exports.seed = async function (knex) {
       slug: 'sendok-dan-garbu',
       description: 'ini adalah deskripsi',
       image:
-        'http://localhost:3000/static/uploads/1678611031380-B356DDBC-2C73-4842-A274-11EC1EBC31EF.png',
+        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
       price: 5000,
       compensation: 10000,
     },
@@ -153,7 +153,7 @@ exports.seed = async function (knex) {
       description: 'Ini bagian deskripsi',
       price: 115000,
       image:
-        'http://localhost:3000/static/uploads/1678611031380-B356DDBC-2C73-4842-A274-11EC1EBC31EF.png',
+        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
     },
     {
       id: uuid(),
@@ -164,7 +164,7 @@ exports.seed = async function (knex) {
       description: 'Ini bagian deskripsi',
       price: 135000,
       image:
-        'http://localhost:3000/static/uploads/1678611031380-B356DDBC-2C73-4842-A274-11EC1EBC31EF.png',
+        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
     },
     {
       id: uuid(),
@@ -175,7 +175,7 @@ exports.seed = async function (knex) {
       description: 'Ini bagian deskripsi',
       price: 165000,
       image:
-        'http://localhost:3000/static/uploads/1678611031380-B356DDBC-2C73-4842-A274-11EC1EBC31EF.png',
+        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
     },
   ]);
 

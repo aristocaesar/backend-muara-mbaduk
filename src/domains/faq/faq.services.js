@@ -31,7 +31,10 @@ class FaqService {
       .where({ id })
       .table('faq')
       .first()
-      .then((row) => new Faq(row).toJson())
+      .then((row) => {
+        if (row == undefined) return [];
+        return new Faq(row).toJson();
+      })
       .catch((error) => {
         throw new Error(error);
       });

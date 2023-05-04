@@ -342,7 +342,8 @@ class PaymentService {
    * @param {Object} payload
    */
   static async notification(payload) {
-    await Midtrans.core()
+    await new Midtrans()
+      .core()
       .transaction.notification(payload)
       .then(async (statusResponse) => {
         let transactionId = statusResponse.transaction_id;
