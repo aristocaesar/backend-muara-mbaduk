@@ -201,7 +201,7 @@ class AdminController {
         res.status(401).json({
           code: 401,
           status: 'UNAUTORIZED',
-          data: {
+          errors: {
             message: error.message,
           },
         });
