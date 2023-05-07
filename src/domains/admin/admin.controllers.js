@@ -194,7 +194,7 @@ class AdminController {
       if (logined == 'Email atau password salah') {
         res.status(401).json({
           code: 401,
-          status: 'Unauthorized',
+          status: 'UNAUTORIZED',
           data: logined,
         });
       } else {

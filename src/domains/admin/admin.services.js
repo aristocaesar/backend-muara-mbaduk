@@ -144,14 +144,13 @@ class AdminService {
       .select()
       .where('email', email)
       .first()
-      .then((row) => {
-        if (row == undefined) return 'Email atau password salah';
-        return row;
-      })
       .then((admin) => {
+        if (admin == undefined) return 'Email atau password salah';
+
         if (!bcrypt.compareSync(password, admin.password))
           return 'Email atau password salah';
-        return admin;
+
+        return new Admin(admin).toJson();
       })
       .catch((error) => {
         throw new Error(error);

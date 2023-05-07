@@ -22,7 +22,6 @@ class Admin {
       id: this.id,
       fullname: this.fullname,
       email: this.email,
-      password: this.password,
       access: this.access,
       created_at: this.created_at,
       updated_at: this.updated_at,
