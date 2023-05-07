@@ -191,27 +191,29 @@ class AdminController {
   static async signIn(req, res, next) {
     try {
       const logined = await AdminService.signIn(req.body);
-      if (logined == 'Email atau password salah') {
+      res.status(200).json({
+        code: 200,
+        status: 'OK',
+        data: logined,
+      });
+    } catch (error) {
+      if (error.message == 'Email atau password salah!') {
         res.status(401).json({
           code: 401,
           status: 'UNAUTORIZED',
-          data: logined,
+          data: {
+            message: error.message,
+          },
         });
       } else {
-        res.status(200).json({
-          code: 200,
-          status: 'OK',
-          data: logined,
+        res.status(400).json({
+          code: 400,
+          status: 'BAD_REQUEST',
+          errors: {
+            message: error.message,
+          },
         });
       }
-    } catch (error) {
-      res.status(400).json({
-        code: 400,
-        status: 'BAD_REQUEST',
-        errors: {
-          message: error.message,
-        },
-      });
     }
   }
 }
