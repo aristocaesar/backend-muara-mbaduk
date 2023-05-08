@@ -51,7 +51,7 @@ app.use((req, res, next) => {
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
 // Authentication
-app.use(Authorization);
+// app.use(Authorization);
 // Handle Main Error
 app.use(requestBodyError);
 

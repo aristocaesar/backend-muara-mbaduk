@@ -52,6 +52,31 @@ class ProductController {
   }
 
   /**
+   * Controller search Product
+   * @param {Request} req
+   * @param {Response} res
+   * @param {Next} next
+   */
+  static async search(req, res, next) {
+    try {
+      const products = await ProductsService.search(req.query);
+      res.status(200).json({
+        code: 200,
+        status: 'OK',
+        data: products,
+      });
+    } catch (error) {
+      res.status(400).json({
+        code: 400,
+        status: 'BAD_REQUEST',
+        errors: {
+          message: error.message,
+        },
+      });
+    }
+  }
+
+  /**
    * Controller Store Product
    * @param {Request} req
    * @param {Response} res

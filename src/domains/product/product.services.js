@@ -37,6 +37,25 @@ class ProductsService {
   }
 
   /**
+   * Service search products
+   */
+  static async search(query) {
+    const { title } = query;
+    if (title == undefined) return [];
+
+    return await knex
+      .select()
+      .table('products')
+      .where('title', 'like', `%${title}%`)
+      .then((rows) => {
+        return rows.map((product) => new Product(product).toJson());
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  }
+
+  /**
    * Service Store product
    * @param {Request} req
    * @returns
