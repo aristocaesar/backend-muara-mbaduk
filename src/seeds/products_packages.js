@@ -1,4 +1,6 @@
+require('dotenv').config();
 const { v4: uuid } = require('uuid');
+
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
@@ -11,9 +13,9 @@ exports.seed = async function (knex) {
       id: uuid(),
       title: 'Tenda Tendaki Kap.2 Orang',
       slug: 'tenda-tendaki-kap-2-orang',
-      description: 'ini adalah deskripsi',
-      image:
-        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
+      description:
+        'Fugiat proident esse anim duis cupidatat culpa magna non culpa minim dolor.',
+      image: `${process.env.APP_URI}/static/uploads/default-product.png`,
       price: 60000,
       compensation: 100000,
     },
@@ -21,9 +23,9 @@ exports.seed = async function (knex) {
       id: uuid(),
       title: 'Tenda Miss Borneo Kap.2 Orang',
       slug: 'tenda-miss-borneo-kap-2-orang',
-      description: 'ini adalah deskripsi',
-      image:
-        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
+      description:
+        'Fugiat proident esse anim duis cupidatat culpa magna non culpa minim dolor.',
+      image: `${process.env.APP_URI}/static/uploads/default-product.png`,
       price: 80000,
       compensation: 125000,
     },
@@ -31,9 +33,9 @@ exports.seed = async function (knex) {
       id: uuid(),
       title: 'Tenda Miss Borneo Kap.4 Orang',
       slug: 'tenda-miss-borneo-kap-4-orang',
-      description: 'ini adalah deskripsi',
-      image:
-        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
+      description:
+        'Fugiat proident esse anim duis cupidatat culpa magna non culpa minim dolor.',
+      image: `${process.env.APP_URI}/static/uploads/default-product.png`,
       price: 100000,
       compensation: 150000,
     },
@@ -41,9 +43,9 @@ exports.seed = async function (knex) {
       id: uuid(),
       title: 'Kompor',
       slug: 'kompor',
-      description: 'ini adalah deskripsi',
-      image:
-        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
+      description:
+        'Fugiat proident esse anim duis cupidatat culpa magna non culpa minim dolor.',
+      image: `${process.env.APP_URI}/static/uploads/default-product.png`,
       price: 20000,
       compensation: 50000,
     },
@@ -52,9 +54,9 @@ exports.seed = async function (knex) {
       id: uuid(),
       title: 'Gas Kaleng',
       slug: 'gas-kaleng',
-      description: 'ini adalah deskripsi',
-      image:
-        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
+      description:
+        'Fugiat proident esse anim duis cupidatat culpa magna non culpa minim dolor.',
+      image: `${process.env.APP_URI}/static/uploads/default-product.png`,
       price: 15000,
       compensation: 20000,
     },
@@ -63,9 +65,9 @@ exports.seed = async function (knex) {
       id: uuid(),
       title: 'Nesting / Alat Masak',
       slug: 'nesting',
-      description: 'ini adalah deskripsi',
-      image:
-        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
+      description:
+        'Fugiat proident esse anim duis cupidatat culpa magna non culpa minim dolor.',
+      image: `${process.env.APP_URI}/static/uploads/default-product.png`,
       price: 20000,
       compensation: 50000,
     },
@@ -73,9 +75,9 @@ exports.seed = async function (knex) {
       id: uuid(),
       title: 'Lampu Tenda',
       slug: 'lampu-tenda',
-      description: 'ini adalah deskripsi',
-      image:
-        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
+      description:
+        'Fugiat proident esse anim duis cupidatat culpa magna non culpa minim dolor.',
+      image: `${process.env.APP_URI}/static/uploads/default-product.png`,
       price: 10000,
       compensation: 15000,
     },
@@ -83,9 +85,9 @@ exports.seed = async function (knex) {
       id: uuid(),
       title: 'Kursi Lipat',
       slug: 'kursi-lipat',
-      description: 'ini adalah deskripsi',
-      image:
-        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
+      description:
+        'Fugiat proident esse anim duis cupidatat culpa magna non culpa minim dolor.',
+      image: `${process.env.APP_URI}/static/uploads/default-product.png`,
       price: 15000,
       compensation: 25000,
     },
@@ -93,9 +95,9 @@ exports.seed = async function (knex) {
       id: uuid(),
       title: 'Meja Kamping',
       slug: 'meja-kamping',
-      description: 'ini adalah deskripsi',
-      image:
-        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
+      description:
+        'Fugiat proident esse anim duis cupidatat culpa magna non culpa minim dolor.',
+      image: `${process.env.APP_URI}/static/uploads/default-product.png`,
       price: 15000,
       compensation: 25000,
     },
@@ -103,9 +105,9 @@ exports.seed = async function (knex) {
       id: uuid(),
       title: 'Matras',
       slug: 'matras',
-      description: 'ini adalah deskripsi',
-      image:
-        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
+      description:
+        'Fugiat proident esse anim duis cupidatat culpa magna non culpa minim dolor.',
+      image: `${process.env.APP_URI}/static/uploads/default-product.png`,
       price: 10000,
       compensation: 15000,
     },
@@ -113,9 +115,9 @@ exports.seed = async function (knex) {
       id: uuid(),
       title: 'Panci',
       slug: 'panci',
-      description: 'ini adalah deskripsi',
-      image:
-        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
+      description:
+        'Fugiat proident esse anim duis cupidatat culpa magna non culpa minim dolor.',
+      image: `${process.env.APP_URI}/static/uploads/default-product.png`,
       price: 10000,
       compensation: 15000,
     },
@@ -123,9 +125,9 @@ exports.seed = async function (knex) {
       id: uuid(),
       title: 'Cangkir',
       slug: 'cangkir',
-      description: 'ini adalah deskripsi',
-      image:
-        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
+      description:
+        'Fugiat proident esse anim duis cupidatat culpa magna non culpa minim dolor.',
+      image: `${process.env.APP_URI}/static/uploads/default-product.png`,
       price: 5000,
       compensation: 10000,
     },
@@ -133,9 +135,9 @@ exports.seed = async function (knex) {
       id: uuid(),
       title: 'Sendok Dan Garbu',
       slug: 'sendok-dan-garbu',
-      description: 'ini adalah deskripsi',
-      image:
-        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
+      description:
+        'Fugiat proident esse anim duis cupidatat culpa magna non culpa minim dolor.',
+      image: `${process.env.APP_URI}/static/uploads/default-product.png`,
       price: 5000,
       compensation: 10000,
     },
@@ -150,10 +152,10 @@ exports.seed = async function (knex) {
       slug: 'paket-standart-2',
       summary: 'Ini bagian summary',
       category: 'general',
-      description: 'Ini bagian deskripsi',
+      description:
+        'Elit excepteur tempor laboris aliqua aute in sunt eiusmod elit duis aute labore esse.',
       price: 115000,
-      image:
-        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
+      image: `${process.env.APP_URI}/static/uploads/default-package.png`,
     },
     {
       id: uuid(),
@@ -161,10 +163,9 @@ exports.seed = async function (knex) {
       slug: 'paket-premium-2',
       summary: 'Ini bagian summary',
       category: 'general',
-      description: 'Ini bagian deskripsi',
+      description: 'Pariatur cupidatat enim veniam proident officia.',
       price: 135000,
-      image:
-        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
+      image: `${process.env.APP_URI}/static/uploads/default-package.png`,
     },
     {
       id: uuid(),
@@ -172,10 +173,10 @@ exports.seed = async function (knex) {
       slug: 'paket-premium-4',
       summary: 'Ini bagian summary',
       category: 'general',
-      description: 'Ini bagian deskripsi',
+      description:
+        'Est proident aliqua nisi minim tempor magna ut nulla do culpa cillum magna.',
       price: 165000,
-      image:
-        'https://muarambaduk.aristocaesar.my.id/static/uploads/1683166892787-0f36e493945939796a0f1f26983993c6.jpg',
+      image: `${process.env.APP_URI}/static/uploads/default-package.png`,
     },
   ]);
 

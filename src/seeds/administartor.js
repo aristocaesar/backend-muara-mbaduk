@@ -12,8 +12,8 @@ exports.seed = async function (knex) {
   await knex('administrator').insert([
     {
       id: uuid(),
-      fullname: 'Aristo Caesar Pratam',
-      email: 'aristo.belakang@gmai.com',
+      fullname: 'Aristo Caesar Pratama',
+      email: 'hi@aristocaesar.my.id',
       password: password,
       access: 'active',
     },
