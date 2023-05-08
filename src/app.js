@@ -56,18 +56,18 @@ app.use(Authorization);
 app.use(requestBodyError);
 
 // Routes ( Version 1 )
-app.use('/api/v1/uploads', uploadRoutes);
-app.use('/api/v1/products', productRoutes);
-app.use('/api/v1/packages', packageRoutes);
-app.use('/api/v1/admin', adminRoutes);
-app.use('/api/v1/news', newsRoutes);
-app.use('/api/v1/users', userRoutes);
-app.use('/api/v1/testimonies', testimonyRoutes);
-app.use('/api/v1/reviews', reviewRoutes);
-app.use('/api/v1/tickets', ticketRoutes);
-app.use('/api/v1/payments', paymentRoutes);
-app.use('/api/v1/faq', faqRoutes);
-app.use('/api/v1/pages', pagesRoutes);
+app.use('/v1/uploads', uploadRoutes);
+app.use('/v1/products', productRoutes);
+app.use('/v1/packages', packageRoutes);
+app.use('/v1/admin', adminRoutes);
+app.use('/v1/news', newsRoutes);
+app.use('/v1/users', userRoutes);
+app.use('/v1/testimonies', testimonyRoutes);
+app.use('/v1/reviews', reviewRoutes);
+app.use('/v1/tickets', ticketRoutes);
+app.use('/v1/payments', paymentRoutes);
+app.use('/v1/faq', faqRoutes);
+app.use('/v1/pages', pagesRoutes);
 
 app.get('*', (req, res) => {
   res.status(404).json({
