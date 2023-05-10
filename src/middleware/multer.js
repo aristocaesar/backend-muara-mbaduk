@@ -1,4 +1,5 @@
 const multer = require('multer');
+const { UploadService } = require('../domains/upload/upload.services');
 
 /**
  * Multer configuration
@@ -11,7 +12,7 @@ const multerStorage = function (path) {
       cb(null, `./src/public/${path}`);
     },
     filename: (req, file, cb) => {
-      cb(null, Date.now() + '-' + file.originalname.replace(/ /g, ''));
+      cb(null, `${Date.now()}-${UploadService.filename(file.originalname)}`);
     },
   });
 };

@@ -1,4 +1,5 @@
 const { UploadService } = require('./upload.services');
+const appRootPath = require('app-root-path');
 
 class UploadController {
   /**
@@ -9,7 +10,7 @@ class UploadController {
    */
   static async get(req, res, next) {
     try {
-      const uploads = await UploadService.get();
+      const uploads = await UploadService.get(req.query);
       res.status(200).json({
         code: 200,
         status: 'OK',
@@ -32,14 +33,20 @@ class UploadController {
    * @param {Response} res
    * @param {Next} next
    */
-  static async getById(req, res, next) {
+  static async getByName(req, res, next) {
     try {
-      const upload = await UploadService.getById(req.params.id);
-      res.status(200).json({
-        code: 200,
-        status: 'OK',
-        data: upload,
-      });
+      const file = await UploadService.getByName(req.params.name);
+      if (req.query.download == undefined) {
+        res.status(200).json({
+          code: 200,
+          status: 'OK',
+          data: file,
+        });
+      } else {
+        res.download(
+          appRootPath.resolve(`/src/public/uploads/${file.filename}`)
+        );
+      }
     } catch (error) {
       res.status(400).json({
         code: 400,

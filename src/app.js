@@ -25,13 +25,17 @@ const { pagesRoutes } = require('./domains/pages/pages.routes');
 
 app.use(
   cors({
-    origin: `${process.env.ORIGIN}`,
+    origin: process.env.ORIGIN.split(','),
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   })
 );
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: process.env.RESOURCE_ORIGIN },
+  })
+);
 app.use(compression());
 app.use(cookieParser());
 // allow parse x-www-form-urlencoded / multipart/form-data
