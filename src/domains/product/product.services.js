@@ -25,7 +25,8 @@ class ProductsService {
    */
   static async getBySlug(slug) {
     return await knex('products')
-      .where('slug', slug)
+      .where('id', slug)
+      .orWhere('slug', slug)
       .first()
       .then((row) => {
         if (row != undefined) return new Product(row).toJson();
