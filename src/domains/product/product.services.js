@@ -99,6 +99,7 @@ class ProductsService {
 
     return await knex('products')
       .where({ slug })
+      .orWhere('id', slug)
       .update(body)
       .then((rowCount) => {
         if (rowCount === 0) {
@@ -122,6 +123,7 @@ class ProductsService {
   static async delete(slug) {
     return await knex('products')
       .where({ slug })
+      .orWhere('id', slug)
       .del()
       .then((deleted) => {
         if (deleted === 0) throw 'Id atau produk tersebut tidak tersedia';
