@@ -4,7 +4,7 @@ const { UserController } = require('./user.controllers');
 const route = Router();
 
 route.get('/', UserController.get);
-route.get('/account', UserController.account);
+route.post('/account', UserController.account);
 route.get('/logout', UserController.logout);
 route.post('/login', UserController.login);
 route.get('/:id', UserController.getById);

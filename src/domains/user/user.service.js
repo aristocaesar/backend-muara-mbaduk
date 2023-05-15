@@ -101,9 +101,10 @@ class UserService {
    */
   static async account(payload) {
     try {
-      if (payload == undefined) throw 'Account access expired';
-      const { MUARA_MBADUK } = payload;
-      return Authentication.Verify(MUARA_MBADUK);
+      if (payload.token == undefined || payload.token == null)
+        throw 'Account access expired';
+      const { token } = payload;
+      return Authentication.Verify(token);
     } catch (error) {
       throw new Error(error);
     }

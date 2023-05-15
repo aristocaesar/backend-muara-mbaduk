@@ -90,7 +90,7 @@ class UserController {
    */
   static async account(req, res, next) {
     try {
-      const account = await UserService.account(req.cookies);
+      const account = await UserService.account(req.body);
       res.status(200).json({
         code: 200,
         status: 'OK',
