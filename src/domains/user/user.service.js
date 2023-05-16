@@ -57,9 +57,10 @@ class UserService {
           /**
            * When user not registered
            */
+          const newId = uuid();
           if (user == undefined) {
             const _user = {
-              id: uuid(),
+              id: newId,
               fullname: payload.name,
               email: payload.email,
               images: payload.picture,
@@ -79,6 +80,7 @@ class UserService {
            * Generate token JWT
            */
           const tokenAccess = Authentication.Sign({
+            id: user != undefined ? user.id : newId,
             fullname: payload.name,
             email: payload.email,
             images: payload.picture,
