@@ -39,10 +39,10 @@ class PaymentValidate {
               'number.empty': 'Jumlah paket harus terisi',
               'any.required': 'Jumlah paket harus terisi',
             }),
-          }).required()
+          }).default({})
         )
         .required()
-        .allow(null),
+        .default([]),
       tickets: Joi.array()
         .items(
           Joi.object({

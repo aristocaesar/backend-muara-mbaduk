@@ -185,7 +185,10 @@ class PaymentService {
           throw 'Harap mengisi paket camping';
         }
       }
-      const packages = await PackageService.packagesToPayment(payload.packages);
+      const packages =
+        payload.camping == true
+          ? await PackageService.packagesToPayment(payload.packages)
+          : null;
 
       // Generate valid tickets with quantity and set gross_amount
       const tickets = await TicketService.ticketsToPayment(
@@ -206,7 +209,7 @@ class PaymentService {
         camping: payload.camping,
         bank: payload.bank,
         gross_amount,
-        packages: packages.items,
+        packages: payload.camping == true ? packages.items : [],
         tickets: tickets.items,
       });
 
@@ -224,7 +227,9 @@ class PaymentService {
    */
   static async getGrossAmount(packages, tickets) {
     const tax = 5000;
-    return packages.gross_amount + tickets.gross_amount + tax;
+    const packagesGrossAmount =
+      packages == null || packages == [] ? 0 : packages.gross_amount;
+    return packagesGrossAmount + tickets.gross_amount + tax;
   }
 
   /**
@@ -281,14 +286,17 @@ class PaymentService {
       va_bank: bank.va_numbers.va_number,
     };
 
-    const payment_packages = payload.packages.map((pkg) => {
-      return {
-        id: uuid(),
-        payment_id: payment.id,
-        package_id: pkg.id,
-        quantity: pkg.quantity,
-      };
-    });
+    const payment_packages =
+      payload.packages.length != 0
+        ? payload.packages.map((pkg) => {
+            return {
+              id: uuid(),
+              payment_id: payment.id,
+              package_id: pkg.id,
+              quantity: pkg.quantity,
+            };
+          })
+        : null;
 
     const payment_tickets = payload.tickets.map((tct) => ({
       id: uuid(),

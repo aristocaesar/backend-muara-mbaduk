@@ -137,7 +137,7 @@ class TicketService {
    * @param {Object} tickets
    * @returns
    */
-  static async ticketsToPayment(camping, date_types, tickets) {
+  static async ticketsToPayment(camping, weekend, tickets) {
     const allTickets = await this.get();
     let gross_amount = 0;
     let ticketsValid = [];
@@ -163,7 +163,7 @@ class TicketService {
           ticketsValid.push({
             id: allTickets[j].id,
             price:
-              date_types == 'normal'
+              weekend == false
                 ? allTickets[j].normal_day
                 : allTickets[j].weekend_day,
             name: camping == true ? tickets[i].name : null,
@@ -172,7 +172,7 @@ class TicketService {
 
           // Set price tickets
           gross_amount +=
-            date_types == 'normal'
+            weekend == false
               ? allTickets[j].normal_day
               : allTickets[j].weekend_day;
         }
