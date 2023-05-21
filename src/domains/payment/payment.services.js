@@ -86,7 +86,7 @@ class PaymentService {
 
         await knex('payment_packages')
           .select(
-            'payment_packages.id',
+            'payment_packages.package_id as id',
             'packages.title',
             'packages.price',
             'payment_packages.quantity'
@@ -100,7 +100,7 @@ class PaymentService {
 
         await knex('payment_tickets')
           .select(
-            'payment_tickets.id',
+            'payment_tickets.ticket_id as id',
             'tickets.title',
             'tickets.category',
             `${
