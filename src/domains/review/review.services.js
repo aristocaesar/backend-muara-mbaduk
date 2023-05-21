@@ -52,6 +52,30 @@ class ReviewService {
   }
 
   /**
+   * Service get all reviews
+   * @returns Object
+   */
+  static async getByPackage(id) {
+    return await knex('reviews')
+      .select(
+        'reviews.*',
+        'packages.slug as pkg',
+        'users.fullname as fullname',
+        'users.images as images'
+      )
+      .join('users', 'reviews.id_user', 'users.id')
+      .join('packages', 'reviews.id_package', 'packages.id')
+      .where('reviews.id_package', id)
+      .then((reviews) => {
+        if (reviews == undefined) return [];
+        return reviews.map((review) => new Review(review).toJSON());
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  }
+
+  /**
    * Service store reviews
    * @returns Object
    */

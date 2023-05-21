@@ -52,6 +52,31 @@ class ReviewController {
   }
 
   /**
+   * Controller get review by package
+   * @param {Object} req
+   * @param {Object} res
+   * @param {Object} next
+   */
+  static async getByPackage(req, res, next) {
+    try {
+      const reviews = await ReviewService.getByPackage(req.params.id);
+      res.status(200).json({
+        code: 200,
+        status: 'OK',
+        data: reviews,
+      });
+    } catch (error) {
+      res.status(400).json({
+        code: 400,
+        status: 'BAD_REQUEST',
+        errors: {
+          message: error.message,
+        },
+      });
+    }
+  }
+
+  /**
    * Controller store review
    * @param {Object} req
    * @param {Object} res
