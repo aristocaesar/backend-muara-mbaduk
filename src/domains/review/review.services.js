@@ -58,10 +58,27 @@ class ReviewService {
   static async store(body) {
     ReviewValidate.valid(body);
 
-    const review = Object.assign({ id: uuid() }, body);
+    const review = Array.isArray(body.id_package)
+      ? body.id_package.map((pkg) => {
+          return {
+            id: uuid(),
+            id_package: pkg,
+            id_user: body.id_user,
+            star: body.star,
+            description: body.description,
+          };
+        })
+      : Object.assign({ id: uuid() }, body);
+
     return await knex('reviews')
       .insert(review)
-      .then(() => new Review(review).toJSON())
+      .then(() => {
+        return Array.isArray(review) == true
+          ? review.map((data) => {
+              return new Review(data).toJSON();
+            })
+          : new Review(review).toJSON();
+      })
       .catch((error) => {
         if (error.code == 'ER_NO_REFERENCED_ROW_2')
           throw new Error('Paket atau User review tidak tersedia');
