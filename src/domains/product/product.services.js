@@ -7,49 +7,61 @@ class ProductsService {
   /**
    * Service Get all products
    */
-  static async get() {
-    return await knex
+  static async get(query) {
+    const search = query.search == undefined ? '' : query.search;
+    const limit =
+      query.limit == '' || query.limit < 0 || query.limit == undefined
+        ? 20
+        : query.limit;
+    const current =
+      query.current == '' || query.current <= 0 || query.current == undefined
+        ? 1
+        : query.current;
+
+    let products = {
+      items: [],
+      length: 0,
+      total: 0,
+      total_pages: 0,
+      current: parseInt(current) > 0 ? parseInt(current) : 0,
+    };
+
+    if (products.current <= 0) return products;
+
+    products.total = await knex('products')
+      .count('* as total')
+      .first()
+      .then((rows) => rows.total);
+
+    const totalPages = Math.ceil(products.total / limit);
+    products.total_pages = totalPages == Infinity ? 0 : totalPages;
+
+    products.items = await knex('products')
       .select()
-      .table('products')
+      .where('title', 'like', `%${search}%`)
+      .offset((current - 1) * limit)
+      .limit(limit)
       .then((rows) => {
         return rows.map((product) => new Product(product).toJson());
-      })
-      .catch((error) => {
-        throw new Error(error);
       });
+
+    products.length = products.items.length;
+
+    return products;
   }
 
   /**
    * Service Get product by id
    * @param {string} id
    */
-  static async getBySlug(slug) {
+  static async getById(id) {
     return await knex('products')
-      .where('id', slug)
-      .orWhere('slug', slug)
+      .where('id', id)
+      .orWhere('slug', id)
       .first()
       .then((row) => {
         if (row != undefined) return new Product(row).toJson();
         return [];
-      })
-      .catch((error) => {
-        throw new Error(error);
-      });
-  }
-
-  /**
-   * Service search products
-   */
-  static async search(query) {
-    const { title } = query;
-    if (title == undefined) return [];
-
-    return await knex
-      .select()
-      .table('products')
-      .where('title', 'like', `%${title}%`)
-      .then((rows) => {
-        return rows.map((product) => new Product(product).toJson());
       })
       .catch((error) => {
         throw new Error(error);

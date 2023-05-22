@@ -9,11 +9,17 @@ class ProductController {
    */
   static async get(req, res, next) {
     try {
-      const products = await ProductsService.get();
+      const products = await ProductsService.get(req.query);
       res.status(200).json({
         code: 200,
         status: 'OK',
-        data: products,
+        data: products.items,
+        page: {
+          size: products.length,
+          total: products.total,
+          total_pages: products.total_pages,
+          current: products.current,
+        },
       });
     } catch (error) {
       res.status(400).json({
@@ -32,38 +38,13 @@ class ProductController {
    * @param {Response} res
    * @param {Next} next
    */
-  static async getBySlug(req, res, next) {
+  static async getById(req, res, next) {
     try {
-      const product = await ProductsService.getBySlug(req.params.slug);
+      const product = await ProductsService.getById(req.params.id);
       res.status(200).json({
         code: 200,
         status: 'OK',
         data: product,
-      });
-    } catch (error) {
-      res.status(400).json({
-        code: 400,
-        status: 'BAD_REQUEST',
-        errors: {
-          message: error.message,
-        },
-      });
-    }
-  }
-
-  /**
-   * Controller search Product
-   * @param {Request} req
-   * @param {Response} res
-   * @param {Next} next
-   */
-  static async search(req, res, next) {
-    try {
-      const products = await ProductsService.search(req.query);
-      res.status(200).json({
-        code: 200,
-        status: 'OK',
-        data: products,
       });
     } catch (error) {
       res.status(400).json({
