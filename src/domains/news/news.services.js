@@ -20,14 +20,15 @@ class NewsService {
   }
 
   /**
-   * Service get news where slug
-   * @param {String} slug
+   * Service get news where id
+   * @param {String} id
    * @returns
    */
-  static async getBySlug(slug) {
+  static async getById(id) {
     return await knex('news')
       .select()
-      .where('slug', slug)
+      .where('id', id)
+      .orWhere('slug', id)
       .first()
       .then((row) => new News(row).toJson())
       .catch((error) => {
@@ -60,11 +61,12 @@ class NewsService {
    * @param {Object} body
    * @returns
    */
-  static async update(slug, body) {
+  static async update(id, body) {
     NewsValidate.valid(body);
 
     return await knex('news')
-      .where('slug', slug)
+      .where('id', id)
+      .orWhere('slug', id)
       .update(body)
       .then((updated) => {
         if (updated == 0) throw 'Id atau berita yang masukkan tidak tersedia';
@@ -78,13 +80,14 @@ class NewsService {
   }
 
   /**
-   * Service delete news where slug
-   * @param {String} slug
+   * Service delete news where id
+   * @param {String} id
    * @returns
    */
-  static async delete(slug) {
+  static async delete(id) {
     return await knex('news')
-      .where('slug', slug)
+      .where('id', id)
+      .orWhere('slug', id)
       .del()
       .then((deleted) => {
         if (deleted === 0) throw 'Berita tersebut tidak tersedia';

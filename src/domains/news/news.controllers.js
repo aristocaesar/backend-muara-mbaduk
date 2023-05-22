@@ -27,14 +27,14 @@ class NewsController {
   }
 
   /**
-   * Controller get news by slug
+   * Controller get news by id
    * @param {Object} req
    * @param {Object} res
    * @param {Object} next
    */
-  static async getBySlug(req, res, next) {
+  static async getById(req, res, next) {
     try {
-      const news = await NewsService.getBySlug(req.params.slug);
+      const news = await NewsService.getById(req.params.id);
       res.status(200).json({
         code: 200,
         status: 'OK',
@@ -84,7 +84,7 @@ class NewsController {
    */
   static async update(req, res, next) {
     try {
-      const updated = await NewsService.update(req.params.slug, req.body);
+      const updated = await NewsService.update(req.params.id, req.body);
       res.status(200).json({
         code: 200,
         status: 'OK',
@@ -109,7 +109,7 @@ class NewsController {
    */
   static async delete(req, res, next) {
     try {
-      const deleted = await NewsService.delete(req.params.slug);
+      const deleted = await NewsService.delete(req.params.id);
       res.status(200).json({
         code: 200,
         status: 'OK',
