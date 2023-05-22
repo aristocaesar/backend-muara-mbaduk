@@ -90,7 +90,7 @@ class ProductController {
    */
   static async update(req, res, next) {
     try {
-      const updated = await ProductsService.update(req.params.slug, req.body);
+      const updated = await ProductsService.update(req.params.id, req.body);
       res.status(200).json({
         code: 201,
         status: 'OK',
@@ -115,7 +115,7 @@ class ProductController {
    */
   static async delete(req, res, next) {
     try {
-      const deleted = await ProductsService.delete(req.params.slug);
+      const deleted = await ProductsService.delete(req.params.id);
       res.status(200).json({
         code: 200,
         status: 'OK',

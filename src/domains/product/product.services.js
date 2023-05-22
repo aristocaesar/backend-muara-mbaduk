@@ -2,6 +2,7 @@ const { knex } = require('../../config/database');
 const { Product } = require('./product.model');
 const { v4: uuidv4 } = require('uuid');
 const { ProductValidate } = require('./product.validate');
+const { FormInput } = require('../../utils/formInput');
 
 class ProductsService {
   /**
@@ -41,6 +42,7 @@ class ProductsService {
       .where('title', 'like', `%${search}%`)
       .offset((current - 1) * limit)
       .limit(limit)
+      .orderBy('created_at', 'desc')
       .then((rows) => {
         return rows.map((product) => new Product(product).toJson());
       });
@@ -76,7 +78,7 @@ class ProductsService {
   static async store(body) {
     ProductValidate.valid(body);
 
-    let {
+    const {
       id = uuidv4(),
       title,
       slug,
@@ -85,12 +87,28 @@ class ProductsService {
       price,
       compensation,
     } = body;
+
     return await knex
-      .insert({ id, title, slug, description, image, price, compensation })
+      .insert({
+        id,
+        title,
+        slug: FormInput.slug(slug),
+        description,
+        image,
+        price,
+        compensation,
+      })
       .into('products')
       .then(() => {
-        (price = parseInt(price)), (compensation = parseInt(compensation));
-        return { id, title, slug, description, image, price, compensation };
+        return new Product({
+          id,
+          title,
+          slug: FormInput.slug(slug),
+          description,
+          image,
+          price: parseInt(price),
+          compensation: parseInt(compensation),
+        }).toJson();
       })
       .catch((error) => {
         if (error.code == 'ER_DUP_ENTRY') {
@@ -106,18 +124,37 @@ class ProductsService {
    * @param {Object} body
    * @returns
    */
-  static async update(slug, body) {
+  static async update(id, body) {
+    if (id == undefined || id == '')
+      throw 'Id atau produk tersebut tidak tersedia';
+
     ProductValidate.valid(body);
 
+    const { title, slug, description, image, price, compensation } = body;
+
     return await knex('products')
-      .where({ slug })
-      .orWhere('id', slug)
-      .update(body)
+      .orWhere('id', id)
+      .update({
+        title,
+        slug: FormInput.slug(slug),
+        description,
+        image,
+        price,
+        compensation,
+      })
       .then((rowCount) => {
         if (rowCount === 0) {
           throw 'Id atau produk tersebut tidak tersedia';
         }
-        return new Product(body).toJson();
+        return new Product({
+          id,
+          title,
+          slug: FormInput.slug(slug),
+          description,
+          image,
+          price,
+          compensation,
+        }).toJson();
       })
       .catch((err) => {
         if (err.code == 'ER_DUP_ENTRY') {
