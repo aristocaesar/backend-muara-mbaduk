@@ -12,6 +12,12 @@ exports.up = async function (knex) {
       .onUpdate('CASCADE')
       .onDelete('CASCADE');
     table
+      .string('id_payment')
+      .references('id')
+      .inTable('payments')
+      .onUpdate('CASCADE')
+      .onDelete('CASCADE');
+    table
       .string('id_user')
       .references('id')
       .inTable('users')

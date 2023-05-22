@@ -2,6 +2,7 @@ class Review {
   constructor({
     id,
     pkg,
+    id_payment,
     fullname,
     images,
     star,
@@ -11,6 +12,7 @@ class Review {
   }) {
     this.id = id;
     this.pkg = pkg;
+    this.payment = id_payment;
     this.fullname = fullname;
     this.images = images;
     this.star = star;
@@ -23,6 +25,7 @@ class Review {
     return {
       id: this.id,
       package: this.pkg,
+      payment: this.payment,
       fullname: this.fullname,
       images: this.images,
       star: this.star,

@@ -5,6 +5,7 @@ const router = Router();
 
 router.get('/', ReviewController.get);
 router.get('/package/:id', ReviewController.getByPackage);
+router.get('/payment/:id', ReviewController.getByPayment);
 router.get('/:id', ReviewController.getById);
 router.post('/', ReviewController.store);
 router.put('/:id', ReviewController.update);

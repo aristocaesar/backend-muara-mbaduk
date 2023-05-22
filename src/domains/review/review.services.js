@@ -12,13 +12,14 @@ class ReviewService {
     return await knex('reviews')
       .select(
         'reviews.*',
-        'packages.slug as pkg',
+        'packages.id as pkg',
         'users.fullname as fullname',
         'users.images as images'
       )
       .join('users', 'reviews.id_user', 'users.id')
       .join('packages', 'reviews.id_package', 'packages.id')
       .then((reviews) => {
+        console.log(reviews);
         return reviews.map((review) => new Review(review).toJSON());
       })
       .catch((error) => {
@@ -76,6 +77,30 @@ class ReviewService {
   }
 
   /**
+   * Service get all reviews by payment
+   * @returns Object
+   */
+  static async getByPayment(id) {
+    return await knex('reviews')
+      .select(
+        'reviews.*',
+        'packages.slug as pkg',
+        'users.fullname as fullname',
+        'users.images as images'
+      )
+      .join('users', 'reviews.id_user', 'users.id')
+      .join('packages', 'reviews.id_package', 'packages.id')
+      .where('reviews.id_payment', id)
+      .then((reviews) => {
+        if (reviews == undefined) return [];
+        return reviews.map((review) => new Review(review).toJSON());
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  }
+
+  /**
    * Service store reviews
    * @returns Object
    */
@@ -87,6 +112,7 @@ class ReviewService {
           return {
             id: uuid(),
             id_package: pkg,
+            id_payment: body.id_payment,
             id_user: body.id_user,
             star: body.star,
             description: body.description,
@@ -105,7 +131,9 @@ class ReviewService {
       })
       .catch((error) => {
         if (error.code == 'ER_NO_REFERENCED_ROW_2')
-          throw new Error('Paket atau User review tidak tersedia');
+          throw new Error(
+            'Paket, Payment atau User untuk review tidak tersedia'
+          );
         throw new Error(error);
       });
   }

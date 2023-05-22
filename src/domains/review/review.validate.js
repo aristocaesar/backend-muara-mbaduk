@@ -16,6 +16,13 @@ class ReviewValidate {
           })
         )
         .required(),
+      id_payment: Joi.string()
+        .required()
+        .messages({
+          'string.empty': 'Id payment harus terisi',
+          'any.required': 'Id payment harus terisi',
+        })
+        .required(),
       id_user: Joi.string()
         .required()
         .messages({
