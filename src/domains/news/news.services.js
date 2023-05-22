@@ -30,7 +30,10 @@ class NewsService {
       .where('id', id)
       .orWhere('slug', id)
       .first()
-      .then((row) => new News(row).toJson())
+      .then((row) => {
+        if (row == undefined) return [];
+        return new News(row).toJson();
+      })
       .catch((error) => {
         throw new Error(error);
       });
