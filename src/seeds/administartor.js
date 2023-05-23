@@ -8,13 +8,21 @@ exports.seed = async function (knex) {
   // Deletes ALL existing entries
   await knex('administrator').del();
   // Default password = 121212
-  const password = bcrypt.hashSync('121212', 8);
+  const password_master = bcrypt.hashSync('12345', 8);
+  const password_default = bcrypt.hashSync('12345', 8);
   await knex('administrator').insert([
     {
       id: uuid(),
       fullname: 'Aristo Caesar Pratama',
       email: 'hi@aristocaesar.my.id',
-      password: password,
+      password: password_master,
+      access: 'active',
+    },
+    {
+      id: uuid(),
+      fullname: 'Dewa Ayu Lestari',
+      email: 'dewaayu@gmail.com',
+      password: password_default,
       access: 'active',
     },
   ]);

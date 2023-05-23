@@ -8,6 +8,7 @@ exports.up = async function (knex) {
     table.string('fullname').notNullable();
     table.string('email').notNullable().unique();
     table.string('password').notNullable();
+    table.enu('role', ['master', 'default']).defaultTo('default');
     table.enu('access', ['active', 'suspend']).defaultTo('active');
     table
       .dateTime('created_at')
