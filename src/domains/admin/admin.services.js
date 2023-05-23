@@ -11,6 +11,7 @@ class AdminService {
   static async get() {
     return await knex('administrator')
       .select()
+      .where('role', 'default')
       .then((admins) => {
         return admins.map((admin) => new Admin(admin).toJson());
       })
@@ -61,15 +62,44 @@ class AdminService {
    */
   static async update(id, body) {
     AdminValidate.validUpdate(body);
-    return knex('administrator')
+    return await knex('administrator')
       .where('id', id)
-      .update(body)
-      .then((row) => {
-        if (row == 0)
-          throw new Error('Admin yang anda masukkan tidak terdaftar');
-        return new Admin(body).toJson();
+      .first()
+      .then((admin) => {
+        // Check avaible admin
+        if (admin == undefined) return [];
+
+        // Check valid password
+        if (body.old_password != undefined && body.new_password != undefined) {
+          if (!bcrypt.compareSync(body.old_password, admin.password))
+            throw 'Password lama salah!';
+        }
+
+        // Merge payload for update
+        const payload = {
+          fullname: body.fullname == undefined ? admin.fullname : body.fullname,
+          email: body.email == undefined ? admin.email : body.email,
+          password:
+            body.new_password == undefined
+              ? admin.password
+              : bcrypt.hashSync(body.new_password, 8),
+          role: body.role == undefined ? admin.role : body.role,
+          access: body.access == undefined ? admin.access : body.access,
+        };
+
+        // Update administrator
+        return knex('administrator')
+          .where('id', id)
+          .update(payload)
+          .then((row) => {
+            if (row == 0)
+              throw new Error('Admin yang anda masukkan tidak terdaftar');
+            return new Admin(payload).toJson();
+          });
       })
       .catch((error) => {
+        if (error.errno == 1062)
+          throw new Error('Email yang anda masukkan sudah terdaftar!');
         throw new Error(error);
       });
   }
@@ -87,45 +117,6 @@ class AdminService {
       .then((deleted) => {
         if (deleted === 0) throw 'Id atau admin tersebut tidak tersedia';
         return 'Admin berhasil dihapus';
-      })
-      .catch((error) => {
-        throw new Error(error);
-      });
-  }
-
-  /**
-   * Service update email administartor
-   * @param {Object} body
-   */
-  static async updateEmail(id, body) {
-    AdminValidate.validUpdateEmail(body);
-    return await knex('administrator')
-      .where('id', id)
-      .update(body)
-      .then((updated) => {
-        if (updated == 0) throw 'Id admin yang anda masukkan tidak terdaftar';
-        return new Admin(body).toJson();
-      })
-      .catch((error) => {
-        if (error.code == 'ER_DUP_ENTRY')
-          throw new Error('Email yang anda masukkan sudah terdaftar');
-        throw new Error(error);
-      });
-  }
-
-  /**
-   * Service update password administartor
-   * @param {Object} body
-   */
-  static async updatePassword(id, body) {
-    AdminValidate.validUpdatePassword(body);
-    const password = bcrypt.hashSync(body.password, 8, (err, hash) => hash);
-    return await knex('administrator')
-      .where('id', id)
-      .update({ password })
-      .then((updated) => {
-        if (updated == 0) throw 'Id admin yang anda masukkan tidak terdaftar';
-        return 'Password berhasil diperbarui';
       })
       .catch((error) => {
         throw new Error(error);

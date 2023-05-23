@@ -127,62 +127,6 @@ class AdminController {
   }
 
   /**
-   * Controller update email administartor
-   * @param {Object} req
-   * @param {Object} res
-   * @param {Object} next
-   */
-  static async updateEmail(req, res, next) {
-    try {
-      const updatedEmail = await AdminService.updateEmail(
-        req.params.id,
-        req.body
-      );
-      res.status(200).json({
-        code: 200,
-        status: 'OK',
-        data: updatedEmail,
-      });
-    } catch (error) {
-      res.status(400).json({
-        code: 400,
-        status: 'BAD_REQUEST',
-        errors: {
-          message: error.message,
-        },
-      });
-    }
-  }
-
-  /**
-   * Controller update password administartor
-   * @param {Object} req
-   * @param {Object} res
-   * @param {Object} next
-   */
-  static async updatePassword(req, res, next) {
-    try {
-      const updatedPassword = await AdminService.updatePassword(
-        req.params.id,
-        req.body
-      );
-      res.status(200).json({
-        code: 200,
-        status: 'OK',
-        data: updatedPassword,
-      });
-    } catch (error) {
-      res.status(400).json({
-        code: 400,
-        status: 'BAD_REQUEST',
-        errors: {
-          message: error.message,
-        },
-      });
-    }
-  }
-
-  /**
    * Controller login administartor
    * @param {Object} req
    * @param {Object} res

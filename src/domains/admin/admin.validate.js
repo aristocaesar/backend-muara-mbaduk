@@ -3,15 +3,15 @@ const Joi = require('joi');
 class AdminValidate {
   static valid(body) {
     const schema = Joi.object({
-      fullname: Joi.string().required().max(64).messages({
+      fullname: Joi.string().required().min(6).max(64).messages({
         'string.empty': 'Nama lengkap harus terisi',
         'any.required': 'Nama lengkap harus terisi',
       }),
-      email: Joi.string().required().max(64).messages({
+      email: Joi.string().required().min(6).max(64).messages({
         'string.empty': 'Email harus terisi',
         'any.required': 'Email harus terisi',
       }),
-      password: Joi.string().min(4).required().messages({
+      password: Joi.string().min(4).max(64).required().messages({
         'string.min': 'Password minimal berisi 4 karakter',
         'string.empty': 'Password harus terisi',
         'any.required': 'Password harus terisi',
@@ -30,11 +30,25 @@ class AdminValidate {
 
   static validUpdate(body) {
     const schema = Joi.object({
-      fullname: Joi.string().required().max(64).messages({
+      fullname: Joi.string().min(6).max(64).messages({
         'string.empty': 'Nama lengkap harus terisi',
         'any.required': 'Nama lengkap harus terisi',
       }),
-      access: Joi.string().valid('active', 'suspend').required().messages({
+      email: Joi.string().min(6).max(64).messages({
+        'string.empty': 'Email harus terisi',
+        'any.required': 'Email harus terisi',
+      }),
+      old_password: Joi.string().min(4).max(64).messages({
+        'string.min': 'Password minimal berisi 4 karakter',
+        'string.empty': 'Password harus terisi',
+        'any.required': 'Password harus terisi',
+      }),
+      new_password: Joi.string().min(4).max(64).messages({
+        'string.min': 'Password minimal berisi 4 karakter',
+        'string.empty': 'Password harus terisi',
+        'any.required': 'Password harus terisi',
+      }),
+      access: Joi.string().valid('active', 'suspend').messages({
         'string.empty': 'Akses harus terisi',
         'any.required': 'Akses harus terisi',
       }),
