@@ -52,6 +52,24 @@ class ReviewValidate {
       throw new Error(validate.error.details[0].message);
     }
   }
+
+  static update(body) {
+    const schema = Joi.object({
+      description: Joi.string().min(5).max(1000).messages({
+        'string.empty': 'Deskripsi testimoni harus terisi',
+        'any.required': 'Deskripsi testimoni harus terisi',
+      }),
+      star: Joi.number().valid(1, 2, 3, 4, 5).messages({
+        'number.empty': 'Ulasan bintang harus terisi',
+        'any.required': 'Ulasan bintang harus terisi',
+      }),
+    });
+
+    const validate = schema.validate(body);
+    if (validate.error != undefined) {
+      throw new Error(validate.error.details[0].message);
+    }
+  }
 }
 
 module.exports = { ReviewValidate };

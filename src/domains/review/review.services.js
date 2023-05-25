@@ -19,7 +19,6 @@ class ReviewService {
       .join('users', 'reviews.id_user', 'users.id')
       .join('packages', 'reviews.id_package', 'packages.id')
       .then((reviews) => {
-        console.log(reviews);
         return reviews.map((review) => new Review(review).toJSON());
       })
       .catch((error) => {
@@ -143,10 +142,10 @@ class ReviewService {
    * @returns Object
    */
   static async update(id, body) {
-    ReviewValidate.valid(body);
+    ReviewValidate.update(body);
 
     return await knex('reviews')
-      .where({ id })
+      .where({ id_payment: id })
       .update(body)
       .then(() => new Review(body).toJSON())
       .catch((error) => {
@@ -160,7 +159,7 @@ class ReviewService {
    */
   static async delete(id) {
     return await knex('reviews')
-      .where({ id })
+      .where({ id_payment: id })
       .del()
       .then((deleted) => {
         if (deleted === 0) throw 'Id atau review tersebut tidak tersedia';
