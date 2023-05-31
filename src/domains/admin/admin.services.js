@@ -67,22 +67,16 @@ class AdminService {
       .first()
       .then((admin) => {
         // Check avaible admin
-        if (admin == undefined) return [];
-
-        // Check valid password
-        if (body.old_password != undefined && body.new_password != undefined) {
-          if (!bcrypt.compareSync(body.old_password, admin.password))
-            throw 'Password lama salah!';
-        }
+        if (admin == undefined) throw 'Id atau admin tersebut tidak terdaftar';
 
         // Merge payload for update
         const payload = {
           fullname: body.fullname == undefined ? admin.fullname : body.fullname,
           email: body.email == undefined ? admin.email : body.email,
           password:
-            body.new_password == undefined
+            body.password == undefined
               ? admin.password
-              : bcrypt.hashSync(body.new_password, 8),
+              : bcrypt.hashSync(body.password, 8),
           role: body.role == undefined ? admin.role : body.role,
           access: body.access == undefined ? admin.access : body.access,
         };
@@ -91,10 +85,9 @@ class AdminService {
         return knex('administrator')
           .where('id', id)
           .update(payload)
-          .then((row) => {
-            if (row == 0)
-              throw new Error('Admin yang anda masukkan tidak terdaftar');
-            return new Admin(payload).toJson();
+          .then(() => new Admin(payload).toJson())
+          .catch((error) => {
+            throw error;
           });
       })
       .catch((error) => {
@@ -115,7 +108,7 @@ class AdminService {
       .where('id', id)
       .del()
       .then((deleted) => {
-        if (deleted === 0) throw 'Id atau admin tersebut tidak tersedia';
+        if (deleted === 0) throw 'Id atau admin tersebut tidak terdaftar';
         return 'Admin berhasil dihapus';
       })
       .catch((error) => {

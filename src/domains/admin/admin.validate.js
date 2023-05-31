@@ -38,12 +38,7 @@ class AdminValidate {
         'string.empty': 'Email harus terisi',
         'any.required': 'Email harus terisi',
       }),
-      old_password: Joi.string().min(4).max(64).messages({
-        'string.min': 'Password minimal berisi 4 karakter',
-        'string.empty': 'Password harus terisi',
-        'any.required': 'Password harus terisi',
-      }),
-      new_password: Joi.string().min(4).max(64).messages({
+      password: Joi.string().min(4).max(64).messages({
         'string.min': 'Password minimal berisi 4 karakter',
         'string.empty': 'Password harus terisi',
         'any.required': 'Password harus terisi',
