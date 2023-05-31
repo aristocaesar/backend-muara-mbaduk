@@ -134,6 +134,8 @@ class AdminService {
         if (!bcrypt.compareSync(password, admin.password))
           throw 'Email atau password salah!';
 
+        if (admin.access == 'suspend') throw 'Akun anda ditangguhkan!';
+
         return new Admin(admin).toJson();
       })
       .catch((error) => {

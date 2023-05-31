@@ -21,8 +21,8 @@ exports.seed = async function (knex) {
     },
     {
       id: uuid(),
-      pages: 'Syarat dan Ketentuan 2',
-      slug: 'terms-of-service-2',
+      pages: 'Syarat Pemesanan',
+      slug: 'terms-order',
       body: '<p>Tetap menjaga kesehatan dan mengikuti protokol kesehatan</p><p>Pengunjung dalam keadaan siap secara fisik dan mental.</p><p>Tiket tidak termasuk asuransi, semua pengunjung disarankan untuk memiliki asuransi kecelakaan pribadi</p><p>Tiket atau pemesaan yang sudah dibayar tidak dapat dirubah hai berkunjungnya serta tidak dapat dibatalkan dan uang tidak dapat dikembalikan.</p><p>Dengan membaca dan check list berarti anda setuju dengan syarat dan kondisi </p>',
     },
     {
