@@ -87,10 +87,10 @@ class PageService {
   static async update(id, payload) {
     PagesValidate.validUpdate(payload);
 
-    return await knex
+    return await knex('pages')
       .update(payload)
       .where({ id })
-      .table('pages')
+      .orWhere('slug', id)
       .then((updated) => {
         if (updated == 0) throw 'Id atau halaman tersebut tidak tersedia';
         return new Pages(payload).toJson();
