@@ -83,16 +83,17 @@ class PageService {
    * @param {String} id
    * @param {Object} payload
    * @returns
-   */   
+   */
   static async update(id, payload) {
-    PagesValidate.valid(payload);
+    PagesValidate.validUpdate(payload);
 
     return await knex
       .update(payload)
       .where({ id })
       .table('pages')
-      .then(() => {
-        return new Pages(Object.assign({ id }, payload)).toJson();
+      .then((updated) => {
+        if (updated == 0) throw 'Id atau halaman tersebut tidak tersedia';
+        return new Pages(payload).toJson();
       })
       .catch((error) => {
         throw new Error(error);
