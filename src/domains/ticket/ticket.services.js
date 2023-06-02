@@ -195,7 +195,7 @@ class TicketService {
    * @returns
    */
   static async update(id, body) {
-    TicketValidate.valid(body);
+    TicketValidate.patch(body);
 
     return await knex('tickets')
       .update(body)
