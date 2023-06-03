@@ -28,7 +28,6 @@ class PackageService {
             id: groupRows[0].id,
             title: groupRows[0].title,
             slug: groupRows[0].slug,
-            summary: groupRows[0].summary,
             category: groupRows[0].category,
             description: groupRows[0].description,
             price: groupRows[0].price,
@@ -73,7 +72,8 @@ class PackageService {
         'packages_detail.quantity as product_quantity',
         'products.image as product_image'
       )
-      .where('packages.slug', '=', slug)
+      .where('packages.id', '=', slug)
+      .orWhere('packages.slug', '=', slug)
       .leftJoin('packages_detail', 'packages.title', 'packages_detail.package')
       .leftJoin('products', 'products.title', 'packages_detail.product')
       .then((packages) => {
@@ -83,7 +83,6 @@ class PackageService {
             id: groupRows[0].id,
             title: groupRows[0].title,
             slug: groupRows[0].slug,
-            summary: groupRows[0].summary,
             category: groupRows[0].category,
             description: groupRows[0].description,
             price: groupRows[0].price,
@@ -143,7 +142,6 @@ class PackageService {
             id: groupRows[0].id,
             title: groupRows[0].title,
             slug: groupRows[0].slug,
-            summary: groupRows[0].summary,
             category: groupRows[0].category,
             description: groupRows[0].description,
             price: groupRows[0].price,
@@ -229,22 +227,6 @@ class PackageService {
       });
   }
 
-  static async customPackage(payload) {
-    const pkg = Object.assign({ category: 'custom' }, payload);
-    PackageValidate.valid(pkg);
-
-    const packageItems = Object.assign({ id: uuid() }, pkg);
-    return await knex('packages')
-      .insert(packageItems)
-      .then(() => new Package(packageItems))
-      .catch((error) => {
-        if (error.code == 'ER_DUP_ENTRY') {
-          throw new Error('Paket ini sudah tersedia');
-        }
-        throw new Error(error);
-      });
-  }
-
   /**
    * Service update package by slug
    * @param {Stirng} slug
@@ -252,10 +234,11 @@ class PackageService {
    * @returns
    */
   static async update(slug, body) {
-    PackageValidate.valid(body);
+    PackageValidate.validUpdate(body);
 
     return await knex('packages')
-      .where('slug', '=', slug)
+      .where('id', '=', slug)
+      .orWhere('slug', '=', slug)
       .update(body)
       .then((updated) => {
         if (updated === 0) {
@@ -278,7 +261,8 @@ class PackageService {
    */
   static async delete(slug) {
     return await knex('packages')
-      .where({ slug })
+      .where('id', '=', slug)
+      .orWhere('slug', '=', slug)
       .del()
       .then((deleted) => {
         if (deleted === 0) throw 'Id atau paket tersebut tidak tersedia';

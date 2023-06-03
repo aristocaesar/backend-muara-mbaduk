@@ -3,7 +3,6 @@ class Package {
     id,
     title,
     slug,
-    summary,
     category,
     description,
     price,
@@ -15,7 +14,6 @@ class Package {
     this.id = id;
     this.title = title;
     this.slug = slug;
-    this.summary = summary;
     this.category = category;
     this.description = description;
     this.price = price;
@@ -30,7 +28,6 @@ class Package {
       id: this.id,
       title: this.title,
       slug: this.slug,
-      summary: this.summary,
       category: this.category,
       description: this.description,
       price: this.price,
