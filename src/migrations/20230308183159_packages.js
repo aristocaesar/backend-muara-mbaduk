@@ -7,7 +7,6 @@ exports.up = async function (knex) {
     table.uuid('id').primary();
     table.string('title').notNullable().unique();
     table.string('slug').notNullable().unique();
-    table.string('summary').notNullable();
     table
       .enu('category', ['general', 'custom'])
       .defaultTo('general')
