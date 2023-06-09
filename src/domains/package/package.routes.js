@@ -13,7 +13,9 @@ route.get('/category/:category', PackageController.getByCategory);
 route.post('/', PackageController.store);
 
 route.put('/:slug', PackageController.update);
-route.delete('/:slug', PackageController.delete);
+route.delete('/:id', PackageController.delete);
+
+route.get('/product-not-avaible/:id', PackageController.getProductNotAvaible);
 
 /**
  * Route detail packages

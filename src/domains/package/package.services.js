@@ -3,6 +3,7 @@ const { Package } = require('./package.models');
 const { v4: uuid } = require('uuid');
 const _ = require('lodash');
 const { PackageValidate } = require('./package.validate');
+const { ProductsService } = require('../product/product.services');
 
 class PackageService {
   /**
@@ -174,6 +175,22 @@ class PackageService {
   }
 
   /**
+   * Service get all products that are not available in the package
+   * @param {String} id
+   * @returns Object
+   */
+  static async getProductNotAvaible(id) {
+    const _package = await this.getBySlug(id).then((pkg) => pkg.products);
+    const _products = (await ProductsService.get({})).items;
+
+    return _products.filter((product) => {
+      if (!_package.some((pkg) => pkg.title == product.title)) {
+        return product;
+      }
+    });
+  }
+
+  /**
    * Service generate packages to detail payment
    * @param {Object} packages
    * @returns
@@ -255,14 +272,14 @@ class PackageService {
   }
 
   /**
-   * Service delete package by slug
+   * Service delete package by id
    * @param {String} slug
    * @returns
    */
-  static async delete(slug) {
+  static async delete(id) {
     return await knex('packages')
-      .where('id', '=', slug)
-      .orWhere('slug', '=', slug)
+      .where('id', id)
+      .orWhere('slug', id)
       .del()
       .then((deleted) => {
         if (deleted === 0) throw 'Id atau paket tersebut tidak tersedia';
@@ -283,7 +300,7 @@ class PackageService {
 
     return await knex('packages')
       .select('title')
-      .where('slug', slugPackage)
+      .where('id', slugPackage)
       .first()
       .then((row) => {
         if (row == undefined)
@@ -335,7 +352,7 @@ class PackageService {
 
     return await knex('packages')
       .select('title')
-      .where('slug', slugPackage)
+      .where('id', slugPackage)
       .first()
       .then((row) => {
         if (row == undefined)

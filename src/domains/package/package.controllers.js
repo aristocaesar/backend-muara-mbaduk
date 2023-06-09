@@ -77,6 +77,31 @@ class PackageController {
   }
 
   /**
+   * Controller get all products that are not available in the package
+   * @param {Request} req
+   * @param {Response} res
+   * @param {Next} next
+   */
+  static async getProductNotAvaible(req, res, next) {
+    try {
+      const products = await PackageService.getProductNotAvaible(req.params.id);
+      res.status(200).json({
+        code: 200,
+        status: 'OK',
+        data: products,
+      });
+    } catch (error) {
+      res.status(400).json({
+        code: 400,
+        status: 'BAD_REQUEST',
+        errors: {
+          message: error.message,
+        },
+      });
+    }
+  }
+
+  /**
    * Controller store package
    * @param {Request} req
    * @param {Response} res
@@ -134,7 +159,7 @@ class PackageController {
    */
   static async delete(req, res, next) {
     try {
-      const deleted = await PackageService.delete(req.params.slug);
+      const deleted = await PackageService.delete(req.params.id);
       res.status(200).json({
         code: 200,
         status: 'OK',
