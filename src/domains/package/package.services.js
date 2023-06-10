@@ -387,7 +387,7 @@ class PackageService {
   static async deleteProduct({ slug, id }) {
     return await knex('packages')
       .select('title')
-      .where('slug', slug)
+      .where('id', slug)
       .first()
       .then((row) => {
         if (row == undefined)
