@@ -22,6 +22,9 @@ route.get('/product-not-avaible/:id', PackageController.getProductNotAvaible);
  */
 route.post('/:slug/store-product', PackageController.storeProduct);
 route.put('/:slug/update-product/:id', PackageController.updateProductQuantity);
-route.delete('/:slug/delete-product/:id', PackageController.deleteProduct);
+route.delete(
+  '/:id_package/delete-product/:id_product',
+  PackageController.deleteProduct
+);
 
 module.exports = { packageRoutes: route };

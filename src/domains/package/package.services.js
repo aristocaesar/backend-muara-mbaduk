@@ -384,10 +384,10 @@ class PackageService {
    * @param {String} slugPackage
    * @param {Object} body
    */
-  static async deleteProduct({ slug, id }) {
+  static async deleteProduct({ id_package, id_product }) {
     return await knex('packages')
       .select('title')
-      .where('id', slug)
+      .where('id', id_package)
       .first()
       .then((row) => {
         if (row == undefined)
@@ -397,7 +397,7 @@ class PackageService {
       .then(async (pkg) => {
         return await knex('packages_detail')
           .where('package', pkg.title)
-          .andWhere('id', id)
+          .andWhere('id', id_product)
           .del()
           .then((deleted) => {
             if (deleted === 0) throw 'Id atau paket tersebut tidak tersedia';
