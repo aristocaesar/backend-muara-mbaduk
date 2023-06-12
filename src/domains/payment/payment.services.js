@@ -64,7 +64,7 @@ class PaymentService {
           .map((groupRows) => ({
             id: groupRows[0].id,
             order_id: groupRows[0].order_id,
-            user_id: groupRows[0].user_id,
+            user: groupRows[0].user_id,
             barcode: groupRows[0].barcode,
             camping: groupRows[0].camping == 1 ? true : false,
             type: groupRows[0].type,
@@ -83,6 +83,14 @@ class PaymentService {
             updated_at: groupRows[0].updated_at,
           }))
           .first();
+
+        await knex('users')
+          .select()
+          .where({ id: transaction.user })
+          .first()
+          .then((user) => {
+            transaction.user = user;
+          });
 
         await knex('payment_packages')
           .select(
