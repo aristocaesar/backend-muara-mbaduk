@@ -163,7 +163,7 @@ class ReviewService {
    */
   static async delete(id) {
     return await knex('reviews')
-      .where({ id_payment: id })
+      .where(id)
       .del()
       .then((deleted) => {
         if (deleted === 0) throw 'Id atau review tersebut tidak tersedia';
