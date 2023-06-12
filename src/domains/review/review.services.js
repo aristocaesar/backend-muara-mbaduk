@@ -13,6 +13,7 @@ class ReviewService {
       .select(
         'reviews.*',
         'packages.id as pkg',
+        'packages.title as pkg_title',
         'users.fullname as fullname',
         'users.images as images'
       )
@@ -34,7 +35,8 @@ class ReviewService {
     return await knex('reviews')
       .select(
         'reviews.*',
-        'packages.slug as pkg',
+        'packages.id as pkg',
+        'packages.title as pkg_title',
         'users.fullname as fullname',
         'users.images as images'
       )
@@ -59,7 +61,8 @@ class ReviewService {
     return await knex('reviews')
       .select(
         'reviews.*',
-        'packages.slug as pkg',
+        'packages.id as pkg',
+        'packages.title as pkg_title',
         'users.fullname as fullname',
         'users.images as images'
       )
@@ -83,7 +86,8 @@ class ReviewService {
     return await knex('reviews')
       .select(
         'reviews.*',
-        'packages.slug as pkg',
+        'packages.id as pkg',
+        'packages.title as pkg_title',
         'users.fullname as fullname',
         'users.images as images'
       )
