@@ -27,14 +27,14 @@ class UserController {
   }
 
   /**
-   * Controller get user by id
+   * Controller search user by id or name or email
    * @param {Object} req
    * @param {Object} res
    * @param {Object} next
    */
-  static async getById(req, res, next) {
+  static async search(req, res, next) {
     try {
-      const user = await UserService.getById(req.params.id);
+      const user = await UserService.search(req.params.id);
       res.status(200).json({
         code: 200,
         status: 'OK',
