@@ -29,7 +29,6 @@ class UserService {
       .where('id', id)
       .orWhere('fullname', 'like', `%${id}%`)
       .orWhere('email', 'like', `%${id}%`)
-      .first()
       .then((user) => {
         if (user != undefined) return new User(user).toJson();
         return [];
