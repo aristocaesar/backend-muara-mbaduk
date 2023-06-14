@@ -20,13 +20,15 @@ class UserService {
   }
 
   /**
-   * Service get user by id
+   * Service get user by id or fullname or email
    * @returns Object
    */
   static async getById(id) {
     return await knex('users')
       .select()
       .where('id', id)
+      .orWhere('fullname', 'like', `%${id}%`)
+      .orWhere('email', 'like', `%${id}%`)
       .first()
       .then((user) => {
         if (user != undefined) return new User(user).toJson();
