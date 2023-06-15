@@ -172,7 +172,7 @@ class PaymentService {
       PaymentValidate.pay(payload);
 
       // Get user
-      const user = await UserService.getById(payload.user_id);
+      const user = (await UserService.search(payload.user_id))[0];
       if (user.length == 0) throw 'User tidak tersedia';
 
       // Check Valid Date
