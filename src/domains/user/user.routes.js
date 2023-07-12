@@ -7,6 +7,7 @@ route.get('/', UserController.get);
 route.post('/account', UserController.account);
 route.get('/logout', UserController.logout);
 route.post('/login', UserController.login);
+route.post('/register', UserController.register);
 route.get('/:id', UserController.search);
 route.put('/:id/change-access', UserController.changeAccess);
 

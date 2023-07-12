@@ -113,6 +113,33 @@ class UserService {
   }
 
   /**
+   * Service register user
+   * @returns Object
+   */
+  static async register(payload) {
+    try {
+      UserValidate.register(payload);
+      return await knex('users')
+        .insert({
+          id: uuid(),
+          fullname: payload.fullname,
+          email: payload.email,
+          images: payload.images,
+          access: 'active',
+        })
+        .then(() => payload)
+        .catch((error) => {
+          if (error.code == 'ER_DUP_ENTRY') {
+            throw new Error('User ini sudah tersedia');
+          }
+          throw new Error(error.message);
+        });
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  /**
    * Service change access user
    * @returns Object
    */

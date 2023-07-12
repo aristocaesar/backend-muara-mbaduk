@@ -108,6 +108,31 @@ class UserController {
   }
 
   /**
+   * Controller register user
+   * @param {Object} req
+   * @param {Object} res
+   * @param {Object} next
+   */
+  static async register(req, res, next) {
+    try {
+      const registered = await UserService.register(req.body);
+      res.status(200).json({
+        code: 200,
+        status: 'OK',
+        data: registered,
+      });
+    } catch (error) {
+      res.status(400).json({
+        code: 400,
+        status: 'BAD_REQUEST',
+        errors: {
+          message: error.message,
+        },
+      });
+    }
+  }
+
+  /**
    * Controller change access user
    * @param {Object} req
    * @param {Object} res
