@@ -97,7 +97,8 @@ class PaymentService {
             'payment_packages.package_id as id',
             'packages.title',
             'packages.price',
-            'payment_packages.quantity'
+            'payment_packages.quantity',
+            'packages.image'
           )
           .leftJoin('packages', 'payment_packages.package_id', 'packages.id')
           .where('payment_id', transaction.id)
